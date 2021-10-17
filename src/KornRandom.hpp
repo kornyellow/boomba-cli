@@ -1,9 +1,6 @@
 #pragma once
 
 // Includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 
 class KornRandom {
 public :

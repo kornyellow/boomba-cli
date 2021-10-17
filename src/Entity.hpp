@@ -1,7 +1,6 @@
 #pragma once
 
 // Includes
-#include <ncurses.h>
 
 class Entity {
 protected:

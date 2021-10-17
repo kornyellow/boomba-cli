@@ -6,6 +6,15 @@
 #define C_MAGENTA  COLOR_PAIR(6)
 #define C_CYAN     COLOR_PAIR(7)
 
+// Includes
+#include <curses.h>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 #include "src/BoombaGame.hpp"
 
 int main() {
@@ -19,8 +28,8 @@ int main() {
     start_color();
 
     init_pair(1, 15, COLOR_BLACK);
-    init_pair(2, 8, COLOR_BLACK);
-    init_pair(3, 9, COLOR_BLACK);
+    init_pair(2,  8, COLOR_BLACK);
+    init_pair(3,  9, COLOR_BLACK);
     init_pair(4, 10, COLOR_BLACK);
     init_pair(5, 11, COLOR_BLACK);
     init_pair(6, 13, COLOR_BLACK);

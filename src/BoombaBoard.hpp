@@ -1,9 +1,6 @@
 #pragma once
 
 // Includes
-#include <ncurses.h>
-#include <string>
-
 class BoombaBoard {
 private:
 

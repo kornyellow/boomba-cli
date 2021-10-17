@@ -1,10 +1,6 @@
 #pragma once
 
 // Includes
-#include <ncurses.h>
-#include <string>
-#include <vector>
-
 #include "BoombaBoard.hpp"
 #include "Boomba.hpp"
 #include "Fruit.hpp"
@@ -27,7 +23,7 @@ public:
     BoombaGame() {
 
         this->board = new BoombaBoard(60, 30);
-        this->boomba = new Boomba(27, 27, this->board->getWindow());
+        this->boomba = new Boomba(27, 26, this->board->getWindow());
         this->is_running = true;
     }
 
@@ -49,11 +45,12 @@ public:
 
             int fruit_color = this->boomba->fruitShoot();
 
-            Fruit fruit(this->boomba->getX() + 2, this->boomba->getY() - 1, this->board->getWindow());
+            Fruit fruit(this->boomba->getX() + 3, this->boomba->getY() - 1, this->board->getWindow());
             fruit.setFruitColor(fruit_color);
             this->fruits.push_back(fruit);
         }
 
+        // Swap Fruit
         if(this->input == 'c') {
 
             this->boomba->fruitSwap();

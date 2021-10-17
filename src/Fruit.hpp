@@ -1,9 +1,6 @@
 #pragma once
 
 // Includes
-#include <ncurses.h>
-#include <string>
-
 #include "Entity.hpp"
 
 class Fruit : public Entity {
@@ -33,11 +30,11 @@ public:
     void draw() {
 
         wattron(this->window, COLOR_PAIR(this->fruit_color));
-        mvwprintw(this->window, (int)this->y + 1, (int)this->x, "O");
+        mvwprintw(this->window, (int)this->y + 1, (int)this->x, "[]");
         wattroff(this->window, COLOR_PAIR(this->fruit_color));
         
         wattron(this->window, C_GRAY);
-        mvwprintw(this->window, (int)this->y + 2, (int)this->x, "\"");
+        mvwprintw(this->window, (int)this->y + 2, (int)this->x, "\"\"");
         wattroff(this->window, C_GRAY);
     }
 };
