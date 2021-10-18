@@ -1,6 +1,7 @@
 #pragma once
 
 // Includes
+#include "GoombaManager.hpp"
 #include "BoombaBoard.hpp"
 #include "Boomba.hpp"
 #include "Fruit.hpp"
@@ -18,18 +19,45 @@ private:
     Boomba *boomba;
     std::vector <Fruit> fruits;
 
+    // Goomba
+    GoombaManager *goomba_manager;
+
+    // Window
+    WINDOW* window;
+
 public:
 
     BoombaGame() {
 
+
+        // Board
         this->board = new BoombaBoard(60, 30);
-        this->boomba = new Boomba(27, 26, this->board->getWindow());
+        
+        // Window
+        this->window = this->board->getWindow();
+
+        // Boomba
+        this->boomba = new Boomba(27, 26, this->window);
+        
+        // Goomba
+        this->goomba_manager = new GoombaManager(this->window);
+        
+        this->goomba_manager->addPath(5, 5);
+        this->goomba_manager->addPath(20, 5);
+        this->goomba_manager->addPath(20, 10);
+        this->goomba_manager->addPath(30, 10);
+        this->goomba_manager->calculatePath();
+        
+        this->goomba_manager->spawnGoomba();
+
         this->is_running = true;
     }
-
     ~BoombaGame() {
 
+        // Clear Memory
+        delete this->board;
         delete this->boomba;
+        delete this->goomba_manager;
     }
 
     void processInput() {
@@ -45,7 +73,7 @@ public:
 
             int fruit_color = this->boomba->fruitShoot();
 
-            Fruit fruit(this->boomba->getX() + 3, this->boomba->getY() - 1, this->board->getWindow());
+            Fruit fruit(this->boomba->getX() + 3, this->boomba->getY() - 1, this->window);
             fruit.setFruitColor(fruit_color);
             this->fruits.push_back(fruit);
         }
@@ -56,7 +84,6 @@ public:
             this->boomba->fruitSwap();
         }
     }
-
     void updateState() {
 
         // Update Boomba
@@ -67,8 +94,10 @@ public:
 
             this->fruits.at(i).update();
         }
-    }
 
+        // Update Goomba
+        this->goomba_manager->update();
+    }
     void reDraw() {
         
         // Clear Buffer
@@ -83,10 +112,12 @@ public:
         // Draw Boomba
         this->boomba->draw();
 
+        // Draw Goomba
+        this->goomba_manager->draw();
+
         // Put Buffer To Console
         this->board->boardRefresh();
     }
-
     bool isRunning() {
 
         return this->is_running;

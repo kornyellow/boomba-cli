@@ -31,39 +31,27 @@ public:
     }
     
     // Board
-
     void boardInitialize() {
 
         wtimeout(this->window, 10);
         boardClear();
         boardRefresh();
     }
-
     void boardAddBorder() {
 
         box(this->window, 0, 0);
     }
-
     void boardClear() {
 
         wclear(this->window);
         boardAddBorder();
     }
-
     void boardRefresh() {
 
         wrefresh(this->window);
     }
 
-    // Draw
-
-    void drawAtPosition(int x, int y, chtype character) {
-
-        mvwaddch(this->window, y, x, character);
-    }
-
     // Input
-
     chtype getInput() {
 
         return wgetch(this->window);

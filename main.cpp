@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "src/Position.hpp"
 #include "src/BoombaGame.hpp"
 
 int main() {

@@ -2,6 +2,7 @@
 
 // Includes
 #include "Entity.hpp"
+#include "KornDraw.hpp"
 #include "KornRandom.hpp"
 
 class Boomba : public Entity {
@@ -57,31 +58,32 @@ public:
         };
 
         for(int i = 0; i < player_icon.size(); i++) {
-            mvwprintw(this->window, this->y + i, this->x, player_icon.at(i).c_str());
+            
+            KornDraw::drawText(this->window, this->x, this->y + i, player_icon.at(i).c_str());
         }
 
-        wattron(this->window, COLOR_PAIR(this->fruit_first));
-        mvwprintw(this->window, this->y, this->x + 3, "[]");
-        wattroff(this->window, COLOR_PAIR(this->fruit_first));
+        KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_first));
+        KornDraw::drawText(this->window, this->x + 3, this->y, "[]");
+        KornDraw::drawColorOff(this->window, COLOR_PAIR(this->fruit_first));
         
-        wattron(this->window, COLOR_PAIR(this->fruit_second));
-        mvwprintw(this->window, this->y + 2, this->x + 3, "[]");
-        wattroff(this->window, COLOR_PAIR(this->fruit_second));
+        KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_second));
+        KornDraw::drawText(this->window, this->x + 3, this->y + 2, "[]");
+        KornDraw::drawColorOff(this->window, COLOR_PAIR(this->fruit_second));
 
         if(this->eye_blink > 0) {
 
             this->eye_blink --;
 
-            mvwprintw(this->window, this->y, this->x + 3, "\"\"");
+            KornDraw::drawText(this->window, this->x + 3, this->y, "\"\"");
 
-            mvwprintw(this->window, this->y + 1, this->x + 2, "X");
-            mvwprintw(this->window, this->y + 1, this->x + 5, "X");
+            KornDraw::drawCharacter(this->window, this->x + 2, this->y + 1, 'X');
+            KornDraw::drawCharacter(this->window, this->x + 5, this->y + 1, 'X');
 
-            wattron(this->window, COLOR_PAIR(this->fruit_second));
-            mvwprintw(this->window, this->y + 1, this->x + 3, "[]");
-            wattroff(this->window, COLOR_PAIR(this->fruit_second));
+            KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_second));
+            KornDraw::drawText(this->window, this->x + 3, this->y + 1, "[]");
+            KornDraw::drawColorOff(this->window, COLOR_PAIR(this->fruit_second));
 
-            mvwprintw(this->window, this->y + 2, this->x + 3, "**");
+            KornDraw::drawText(this->window, this->x + 3, this->y + 2, "**");
         }
     }
 };

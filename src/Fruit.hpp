@@ -2,6 +2,7 @@
 
 // Includes
 #include "Entity.hpp"
+#include "KornDraw.hpp"
 
 class Fruit : public Entity {
 private:
@@ -29,12 +30,12 @@ public:
 
     void draw() {
 
-        wattron(this->window, COLOR_PAIR(this->fruit_color));
-        mvwprintw(this->window, (int)this->y + 1, (int)this->x, "[]");
-        wattroff(this->window, COLOR_PAIR(this->fruit_color));
+        KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_color));
+        KornDraw::drawText(this->window, (int)this->x, (int)this->y + 1, "[]");
+        KornDraw::drawColorOff(this->window, COLOR_PAIR(this->fruit_color));
         
-        wattron(this->window, C_GRAY);
-        mvwprintw(this->window, (int)this->y + 2, (int)this->x, "\"\"");
-        wattroff(this->window, C_GRAY);
+        KornDraw::drawColorOn(this->window, C_GRAY);
+        KornDraw::drawText(this->window, (int)this->x, (int)this->y + 2, "\"\"");
+        KornDraw::drawColorOff(this->window, C_GRAY);
     }
 };
