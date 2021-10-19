@@ -11,7 +11,7 @@ private:
     int fruit_first;
     int fruit_second;
 
-    int eye_blink;
+    int shoot_frame;
 
 public:
 
@@ -22,7 +22,7 @@ public:
         this->fruit_first = KornRandom::randomIntRange(3, 7);
         this->fruit_second = KornRandom::randomIntRange(3, 7);
 
-        this->eye_blink = 0;
+        this->shoot_frame = 0;
     }
 
     int fruitShoot() {
@@ -31,7 +31,7 @@ public:
         this->fruit_first = this->fruit_second;
         this->fruit_second = KornRandom::randomIntRange(3, 7);
 
-        this->eye_blink = 10;
+        this->shoot_frame = 10;
 
         return shoot_fruit;
     }
@@ -52,9 +52,8 @@ public:
     void draw() {
         
         std::vector <std::string> player_icon = {
-            "  _[]_  ",
-            " |o--o| ",
-            "[\"~[]~\"]",
+            " /=O=\\",
+            "(\"o|o\")",
         };
 
         for(int i = 0; i < player_icon.size(); i++) {
@@ -62,28 +61,32 @@ public:
             KornDraw::drawText(this->window, this->x, this->y + i, player_icon.at(i).c_str());
         }
 
+        KornDraw::drawColorOn(this->window, C_GRAY);
+        KornDraw::drawCharacter(this->window, this->x + 1, this->y + 1, '\"');
+        KornDraw::drawCharacter(this->window, this->x + 5, this->y + 1, '\"');
+        KornDraw::drawColorOff(this->window, C_GRAY);
+
         KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_first));
-        KornDraw::drawText(this->window, this->x + 3, this->y, "[]");
+        KornDraw::drawCharacter(this->window, this->x + 3, this->y, 'O');
         KornDraw::drawColorOff(this->window, COLOR_PAIR(this->fruit_first));
-        
+
         KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_second));
-        KornDraw::drawText(this->window, this->x + 3, this->y + 2, "[]");
+        KornDraw::drawCharacter(this->window, this->x + 2, this->y + 1, 'o');
+        KornDraw::drawCharacter(this->window, this->x + 4, this->y + 1, 'o');
         KornDraw::drawColorOff(this->window, COLOR_PAIR(this->fruit_second));
+        
+        if(this->shoot_frame > 0) {
 
-        if(this->eye_blink > 0) {
+            this->shoot_frame --;
 
-            this->eye_blink --;
+            KornDraw::drawCharacter(this->window, this->x + 3, this->y + 1, '-');
 
-            KornDraw::drawText(this->window, this->x + 3, this->y, "\"\"");
-
-            KornDraw::drawCharacter(this->window, this->x + 2, this->y + 1, 'X');
-            KornDraw::drawCharacter(this->window, this->x + 5, this->y + 1, 'X');
+            KornDraw::drawCharacter(this->window, this->x + 3, this->y, '|');
 
             KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_second));
-            KornDraw::drawText(this->window, this->x + 3, this->y + 1, "[]");
+            KornDraw::drawCharacter(this->window, this->x + 2, this->y + 1, '*');
+            KornDraw::drawCharacter(this->window, this->x + 4, this->y + 1, '*');
             KornDraw::drawColorOff(this->window, COLOR_PAIR(this->fruit_second));
-
-            KornDraw::drawText(this->window, this->x + 3, this->y + 2, "**");
         }
     }
 };

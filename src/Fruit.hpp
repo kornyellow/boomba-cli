@@ -31,11 +31,11 @@ public:
     void draw() {
 
         KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_color));
-        KornDraw::drawText(this->window, (int)this->x, (int)this->y + 1, "[]");
+        KornDraw::drawCharacter(this->window, (int)this->x, (int)this->y + 1, 'O');
         KornDraw::drawColorOff(this->window, COLOR_PAIR(this->fruit_color));
         
         KornDraw::drawColorOn(this->window, C_GRAY);
-        KornDraw::drawText(this->window, (int)this->x, (int)this->y + 2, "\"\"");
+        KornDraw::drawCharacter(this->window, (int)this->x, (int)this->y + 2, '|');
         KornDraw::drawColorOff(this->window, C_GRAY);
     }
 };

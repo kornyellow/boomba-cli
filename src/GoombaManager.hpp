@@ -113,24 +113,28 @@ public:
     }
     void draw() {
 
-        // Draw Start Point, End Point
+        // Draw Path
         int path_points_size = this->path_points.size();
         for(int i = 0; i < path_points_size; i++) {
-
-            // Start Point
-            if(i == 0) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'S');
 
             // Draw Path
             if(i < path_points_size - 1) {
 
                 KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, '.');
             }
-
-            // End Point
-            if(i == path_points_size - 1) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'E');
         }
 
         // Draw Goombas
         drawGoombas();
+
+        // Draw Start Point And End Point
+        for(int i = 0; i < path_points_size; i++) {
+
+            // Start Point
+            if(i == 0) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'S');
+
+            // End Point
+            if(i == path_points_size - 1) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'E');
+        }
     }   
 };

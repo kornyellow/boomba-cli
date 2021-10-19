@@ -37,7 +37,7 @@ public:
         this->window = this->board->getWindow();
 
         // Boomba
-        this->boomba = new Boomba(27, 26, this->window);
+        this->boomba = new Boomba(27, 27, this->window);
         
         // Goomba
         this->goomba_manager = new GoombaManager(this->window);
