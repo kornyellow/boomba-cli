@@ -11,11 +11,11 @@
 ติดตั้ง ncurses Library
 
 ``` console
-$ sudo apt-get install libncurses-dev
+sudo apt-get install libncurses-dev
 ```
 
 จากนั้นรันคำสั่ง
 
 ``` console
-$ make
+make
 ```
