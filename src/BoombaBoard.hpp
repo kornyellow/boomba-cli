@@ -1,6 +1,7 @@
 #pragma once
 
 // Includes
+
 class BoombaBoard {
 private:
 
@@ -33,7 +34,10 @@ public:
     // Board
     void boardInitialize() {
 
+        // Framerate
         wtimeout(this->window, 10);
+
+        // Initialize Board
         boardClear();
         boardRefresh();
     }

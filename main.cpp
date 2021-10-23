@@ -15,6 +15,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "src/KornMath.hpp"
+#include "src/KornDraw.hpp"
+#include "src/KornRandom.hpp"
 #include "src/Position.hpp"
 #include "src/BoombaGame.hpp"
 

@@ -5,8 +5,8 @@
 class Entity {
 protected:
 
-    double x;
-    double y;
+    int x;
+    int y;
 
     bool is_show;
 
@@ -24,12 +24,12 @@ public:
         this->window = window;
     }   
 
-    double getX() {
+    int getX() {
 
         return this->x;
     }
 
-    double getY() {
+    int getY() {
 
         return this->y;
     }

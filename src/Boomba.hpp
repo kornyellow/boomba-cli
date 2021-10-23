@@ -2,8 +2,6 @@
 
 // Includes
 #include "Entity.hpp"
-#include "KornDraw.hpp"
-#include "KornRandom.hpp"
 
 class Boomba : public Entity {
 private:
@@ -46,7 +44,7 @@ public:
     void update(chtype input) {
 
         if(input == 'D' && this->x - 1 > 0) this->x --;
-        if(input == 'C' && this->x + 8 < this->window->_maxx) this->x ++;
+        if(input == 'C' && this->x + 7 < this->window->_maxx) this->x ++;
     }
 
     void draw() {
