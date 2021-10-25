@@ -42,7 +42,7 @@ public:
         this->goomba_manager = new GoombaManager(this->window);
         
         this->goomba_manager->addPath(4 , 2);
-        this->goomba_manager->addPath(34, 2);
+        this->goomba_manager->addPath(34, 5);
         this->goomba_manager->addPath(34, 5);
         this->goomba_manager->addPath(4 , 5);
         this->goomba_manager->addPath(4 , 8);
