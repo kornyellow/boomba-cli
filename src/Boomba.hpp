@@ -6,9 +6,11 @@
 class Boomba : public Entity {
 private:
 
+    // Fruits
     int fruit_first;
     int fruit_second;
 
+    // Shooting
     int shoot_frame;
 
 public:
@@ -16,13 +18,16 @@ public:
     Boomba(int x, int y, WINDOW *window) {
 
         init(x, y, window);
-        
+
+        // Fruits
         this->fruit_first = KornRandom::randomIntRange(3, 7);
         this->fruit_second = KornRandom::randomIntRange(3, 7);
 
+        // Shooting
         this->shoot_frame = 0;
     }
 
+    // Fruits Functions
     int fruitShoot() {
 
         int shoot_fruit = this->fruit_first;
@@ -33,7 +38,6 @@ public:
 
         return shoot_fruit;
     }
-
     void fruitSwap() {
 
         this->fruit_first = this->fruit_second + this->fruit_first;
@@ -41,14 +45,15 @@ public:
         this->fruit_first = this->fruit_first - this->fruit_second;
     }
 
+    // Functions
     void update(chtype input) {
 
         if(input == 'D' && this->x - 1 > 0) this->x --;
         if(input == 'C' && this->x + 7 < this->window->_maxx) this->x ++;
     }
-
     void draw() {
         
+        // Prepare Player's Strings
         std::vector <std::string> player_icon = {
             " /=O=\\",
             "(\"o|o\")",
@@ -59,6 +64,7 @@ public:
             KornDraw::drawText(this->window, this->x, this->y + i, player_icon.at(i).c_str());
         }
 
+        // Draw Player
         KornDraw::drawColorOn(this->window, C_GRAY);
         KornDraw::drawCharacter(this->window, this->x + 1, this->y + 1, '\"');
         KornDraw::drawCharacter(this->window, this->x + 5, this->y + 1, '\"');

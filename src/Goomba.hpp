@@ -45,7 +45,7 @@ public:
         this->color = KornRandom::randomIntRange(3, 7);
     }
 
-    // Move
+    // Movement
     void setProgress(int progress) {
 
         this->progress = progress;

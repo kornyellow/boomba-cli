@@ -14,6 +14,7 @@ protected:
 
 public:
 
+    // Initialize Function
     void init(int x, int y, WINDOW *window) {
 
         this->x = x;
@@ -24,16 +25,15 @@ public:
         this->window = window;
     }   
 
+    // Accessors
     int getX() {
 
         return this->x;
     }
-
     int getY() {
 
         return this->y;
     }
-
     WINDOW* getWindow() {
 
         return this->window;

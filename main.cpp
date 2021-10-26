@@ -23,14 +23,16 @@
 
 int main() {
 
+    // Initialize
+    srand(time(NULL));
     initscr();
     raw();
     noecho();
     use_default_colors();
     curs_set(false);
 
+    // Setup Colors
     start_color();
-
     init_pair(1, 15, COLOR_BLACK);
     init_pair(2,  8, COLOR_BLACK);
     init_pair(3,  9, COLOR_BLACK);
@@ -39,8 +41,8 @@ int main() {
     init_pair(6, 13, COLOR_BLACK);
     init_pair(7, 14, COLOR_BLACK);
 
+    // Game Loop
     BoombaGame game;
-
     while(game.isRunning()) {
 
         game.processInput();
@@ -49,6 +51,5 @@ int main() {
     }
 
     endwin();
-    
-    return 0;    
+    return EXIT_SUCCESS;
 }

@@ -3,6 +3,7 @@
 // Includes
 #include "GoombaManager.hpp"
 #include "BoombaBoard.hpp"
+#include "BoombaUI.hpp"
 #include "Boomba.hpp"
 #include "Fruit.hpp"
 
@@ -14,6 +15,9 @@ private:
     
     bool is_running;
     chtype input;
+
+    // Boomba UI
+    BoombaUI *boomba_ui;
     
     // Boomba
     Boomba *boomba;
@@ -42,7 +46,7 @@ public:
         this->goomba_manager = new GoombaManager(this->window);
         
         this->goomba_manager->addPath(4 , 2);
-        this->goomba_manager->addPath(34, 5);
+        this->goomba_manager->addPath(34, 2);
         this->goomba_manager->addPath(34, 5);
         this->goomba_manager->addPath(4 , 5);
         this->goomba_manager->addPath(4 , 8);
@@ -62,9 +66,11 @@ public:
         // Clear Memory
         delete this->board;
         delete this->boomba;
+        delete this->boomba_ui;
         delete this->goomba_manager;
     }
 
+    // Functions
     void processInput() {
         
         // Get Input
@@ -93,6 +99,9 @@ public:
 
         // Update Boomba
         this->boomba->update(this->input);
+
+        // Update Boomba UI
+        this->boomba_ui->update(this->input);
 
         // Update Fruit
         for(int i = 0; i < this->fruits.size(); i++) {
@@ -232,6 +241,9 @@ public:
         
         // Clear Buffer
         this->board->boardClear();
+
+        // Draw UI
+        this->boomba_ui->draw();
 
         // Draw Goomba
         this->goomba_manager->draw();

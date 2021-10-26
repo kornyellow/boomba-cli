@@ -7,8 +7,10 @@
 class Fruit : public Entity {
 private:
 
+    // Color
     int fruit_color;
 
+    // Movement
     int move_delay;
     int move_speed;
 
@@ -22,11 +24,7 @@ public:
         this->move_speed = 1;
     }
 
-    void setFruitColor(int color) {
-
-        this->fruit_color = color;
-    }
-
+    // Functions
     void update() {
 
         if(this->move_delay < 0) {
@@ -36,7 +34,6 @@ public:
         }
         else this->move_delay --;
     }
-
     void draw() {
 
         KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_color));
@@ -49,6 +46,10 @@ public:
     }
 
     // Colors
+    void setFruitColor(int color) {
+
+        this->fruit_color = color;
+    }  
     void setColor(int color) {
 
         this->fruit_color = color;
