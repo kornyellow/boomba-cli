@@ -21,7 +21,7 @@ public:
         // Window
         this->window_width = window_width;
         this->window_height = window_height;
-        this->window = newwin(this->window_height, this->window_width, 2, (this->console_width/2) - (this->window_width/2));
+        this->window = newwin(this->window_height, this->window_width, 1, (this->console_width/2) - (this->window_width/2));
 
         boardInitialize();
     }
@@ -43,7 +43,16 @@ public:
     }
     void boardAddBorder() {
 
-        box(this->window, 0, 0);
+        mvwhline(this->window, 0, 0, '-', this->window_width);
+        mvwhline(this->window, this->window_height - 1, 0, '-', this->window_width);
+
+        mvwvline(this->window, 0, 0, '|', this->window_height);
+        mvwvline(this->window, 0, this->window_width - 1, '|', this->window_height);
+
+        mvwprintw(this->window, 0, 0, "+");
+        mvwprintw(this->window, 0, this->window_width - 1, "+");
+        mvwprintw(this->window, this->window_height - 1, 0, "+");
+        mvwprintw(this->window, this->window_height - 1, this->window_width - 1, "+");
     }
     void boardClear() {
 

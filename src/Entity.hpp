@@ -23,7 +23,7 @@ public:
         this->is_show = true;
 
         this->window = window;
-    }   
+    }
 
     // Accessors
     int getX() {

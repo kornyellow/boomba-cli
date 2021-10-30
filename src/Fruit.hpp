@@ -21,7 +21,7 @@ public:
         init(x, y, window);
 
         this->move_delay = 0;
-        this->move_speed = 1;
+        this->move_speed = 2;
     }
 
     // Functions
@@ -36,13 +36,8 @@ public:
     }
     void draw() {
 
-        KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_color));
-        KornDraw::drawCharacter(this->window, (int)this->x, (int)this->y + 1, 'O');
-        KornDraw::drawColorOff(this->window, COLOR_PAIR(this->fruit_color));
-        
-        KornDraw::drawColorOn(this->window, C_GRAY);
-        KornDraw::drawCharacter(this->window, (int)this->x, (int)this->y + 2, '|');
-        KornDraw::drawColorOff(this->window, C_GRAY);
+        KornDraw::drawCharacter(this->window, (int)this->x, (int)this->y + 1, '@', this->fruit_color);
+        KornDraw::drawCharacter(this->window, (int)this->x, (int)this->y + 2, '|', C_GRAY);
     }
 
     // Colors

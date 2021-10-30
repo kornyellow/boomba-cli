@@ -12,6 +12,8 @@ private:
 
     // Shooting
     int shoot_frame;
+    int max_scope_frame;
+    int scope;
 
 public:
 
@@ -25,6 +27,7 @@ public:
 
         // Shooting
         this->shoot_frame = 0;
+        this->scope = 0;
     }
 
     // Fruits Functions
@@ -43,6 +46,12 @@ public:
         this->fruit_first = this->fruit_second + this->fruit_first;
         this->fruit_second = this->fruit_first - this->fruit_second;
         this->fruit_first = this->fruit_first - this->fruit_second;
+    }
+
+    // Shoot Functions
+    void setScope(int x) {
+
+        this->scope = x;
     }
 
     // Functions
@@ -65,19 +74,13 @@ public:
         }
 
         // Draw Player
-        KornDraw::drawColorOn(this->window, C_GRAY);
-        KornDraw::drawCharacter(this->window, this->x + 1, this->y + 1, '\"');
-        KornDraw::drawCharacter(this->window, this->x + 5, this->y + 1, '\"');
-        KornDraw::drawColorOff(this->window, C_GRAY);
+        KornDraw::drawCharacter(this->window, this->x + 1, this->y + 1, '\"', C_GRAY);
+        KornDraw::drawCharacter(this->window, this->x + 5, this->y + 1, '\"', C_GRAY);
 
-        KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_first));
-        KornDraw::drawCharacter(this->window, this->x + 3, this->y, 'O');
-        KornDraw::drawColorOff(this->window, COLOR_PAIR(this->fruit_first));
+        KornDraw::drawCharacter(this->window, this->x + 3, this->y, '@', this->fruit_first);
 
-        KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_second));
-        KornDraw::drawCharacter(this->window, this->x + 2, this->y + 1, 'o');
-        KornDraw::drawCharacter(this->window, this->x + 4, this->y + 1, 'o');
-        KornDraw::drawColorOff(this->window, COLOR_PAIR(this->fruit_second));
+        KornDraw::drawCharacter(this->window, this->x + 2, this->y + 1, 'o', this->fruit_second);
+        KornDraw::drawCharacter(this->window, this->x + 4, this->y + 1, 'o', this->fruit_second);
         
         if(this->shoot_frame > 0) {
 
@@ -87,10 +90,19 @@ public:
 
             KornDraw::drawCharacter(this->window, this->x + 3, this->y, '|');
 
-            KornDraw::drawColorOn(this->window, COLOR_PAIR(this->fruit_second));
-            KornDraw::drawCharacter(this->window, this->x + 2, this->y + 1, '*');
-            KornDraw::drawCharacter(this->window, this->x + 4, this->y + 1, '*');
-            KornDraw::drawColorOff(this->window, COLOR_PAIR(this->fruit_second));
+            KornDraw::drawCharacter(this->window, this->x + 2, this->y + 1, '*', this->fruit_second);
+            KornDraw::drawCharacter(this->window, this->x + 4, this->y + 1, '*', this->fruit_second);
+        }
+
+        // Draw Scope
+        KornDraw::drawCharacter(this->window, this->x + 3, this->scope, '^', this->fruit_first);
+        if(max_scope_frame > 0) {
+            
+            max_scope_frame --;
+            for(int i = this->y - 1; i > this->scope; i--) {
+
+                KornDraw::drawCharacter(this->window, this->x + 3, i, '\'', this->fruit_first);
+            }
         }
     }
 };

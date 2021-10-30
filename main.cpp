@@ -1,20 +1,23 @@
-#define C_WHITE    COLOR_PAIR(1)
-#define C_GRAY     COLOR_PAIR(2)
-#define C_RED      COLOR_PAIR(3)
-#define C_GREEN    COLOR_PAIR(4)
-#define C_YELLOW   COLOR_PAIR(5)
-#define C_MAGENTA  COLOR_PAIR(6)
-#define C_CYAN     COLOR_PAIR(7)
+// Define Colors
+#define C_WHITE    1
+#define C_GRAY     2
+#define C_RED      3
+#define C_GREEN    4
+#define C_YELLOW   5
+#define C_MAGENTA  6
+#define C_CYAN     7
 
 // Includes
 #include <curses.h>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
+#include "src/KornDebug.hpp"
 #include "src/KornMath.hpp"
 #include "src/KornDraw.hpp"
 #include "src/KornRandom.hpp"
