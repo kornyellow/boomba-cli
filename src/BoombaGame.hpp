@@ -22,6 +22,7 @@ private:
     // Boomba
     Boomba *boomba;
     std::vector <Fruit> fruits;
+    std::vector <int> color_set;
 
     // Goomba
     GoombaManager *goomba_manager;
@@ -42,27 +43,31 @@ public:
         // Boomba UI
         this->boomba_ui = new BoombaUI();
 
-        // Boomba
-        this->boomba = new Boomba(16, 17, this->window);
-        
         // Goomba
         this->goomba_manager = new GoombaManager(this->window);
         
-        this->goomba_manager->addPath(4 , 2);
-        this->goomba_manager->addPath(44, 2);
-        this->goomba_manager->addPath(44, 5);
-        this->goomba_manager->addPath(4 , 5);
-        this->goomba_manager->addPath(4 , 8);
-        this->goomba_manager->addPath(44, 8);
-        this->goomba_manager->addPath(44, 11);
-        this->goomba_manager->addPath(4 , 11);
-        this->goomba_manager->addPath(4 , 14);
-        this->goomba_manager->addPath(44, 14);
+        this->goomba_manager->addPath(8 , 2);
+        this->goomba_manager->addPath(40, 2);
+        this->goomba_manager->addPath(40, 5);
+        this->goomba_manager->addPath(8 , 5);
+        this->goomba_manager->addPath(8 , 8);
+        this->goomba_manager->addPath(40, 8);
+        this->goomba_manager->addPath(40, 11);
+        this->goomba_manager->addPath(8 , 11);
+        this->goomba_manager->addPath(8 , 14);
+        this->goomba_manager->addPath(40, 14);
         this->goomba_manager->calculatePath();
 
-        this->goomba_manager->addGoombaSet("YYYYGGGGGRRRGGGGYYYYYYYYYYYGGGGGRRRRGGGGGYYYYY#");
-
+        this->goomba_manager->addGoombaSet("YYYYGGGGGRRRGGGG#");
+        this->goomba_manager->addGoombaSet("YYYYGGGGGRRRGGGG#");
+        this->goomba_manager->addGoombaSet("YYYYGGGGGRRRGGGG#");
+        this->goomba_manager->addGoombaSet("YYYYGGGGGRRRGGGG#");
+        
         this->is_running = true;
+        this->colorSet("RGY");
+
+        // Boomba
+        this->boomba = new Boomba(16, 17, this->window, this->color_set);
     }
     ~BoombaGame() {
 
@@ -71,6 +76,26 @@ public:
         delete this->boomba;
         delete this->boomba_ui;
         delete this->goomba_manager;
+    }
+
+    // Colors
+    void colorSet(std::string color) {
+
+        for(int i = 0; i < color.size(); i++) {
+
+            switch(color.at(i)) {
+            
+            case 'R' :
+                this->color_set.push_back(C_RED);
+                break;
+            case 'Y' :
+                this->color_set.push_back(C_YELLOW);
+                break;
+            case 'G' :
+                this->color_set.push_back(C_GREEN);
+                break;
+            }
+        }
     }
 
     // Fruit
@@ -214,6 +239,7 @@ public:
 
         // Update Boomba
         this->boomba->update(this->input);
+        if(!this->goomba_manager->getAllColor().empty()) this->boomba->setColorSet(this->goomba_manager->getAllColor());
 
         // Update Boomba Scope
         int scope = this->boomba->getY();
@@ -263,13 +289,10 @@ public:
             }
         }
 
-        // Update Goomba
-        this->goomba_manager->update();
-
         // Update Collided Goombas
         for(int i = 0; i < this->goomba_manager->getGoombas().size(); i++) {
 
-            if(this->goomba_manager->getGoombas().at(i)->getMoveCooldownMax() == this->goomba_manager->getGoombas().at(i)->getMoveCooldownMaxDefault()) continue;
+            if(!this->goomba_manager->getGoombas().at(i)->getFoundMatch()) continue;
 
             // Check If Not Leader
             bool is_leader = true;
@@ -284,37 +307,14 @@ public:
             }
             if(is_leader) continue;
 
-            int move_cooldown_max_old = this->goomba_manager->getGoombas().at(i)->getMoveCooldownMax();
-
             // Remove Match
             this->destroyMatch(this->goomba_manager->getGoombas().at(i)->getProgress(), this->goomba_manager->getGoombas().at(i)->getColor(), false);
 
-            // Give Old Cooldown Max To Next Group
-            int goomba_group_end_color = -1;
-            for(int j = 0; j < this->goomba_manager->getGoombas().size(); j++) {
-
-                if(this->goomba_manager->getGoombas().at(j)->getProgress() == goomba_progress - 1) {
-
-                    goomba_group_end_color = this->goomba_manager->getGoombas().at(j)->getColor();
-                    continue;
-                }
-            }
-            if(goomba_group_end_color == -1) continue;
-
-            int search_progress = goomba_progress + 1;
-            while(true) {
-
-                for(int j = 0; j < this->goomba_manager->getGoombas().size(); j++) {
-
-                    if(this->goomba_manager->getGoombas().at(j)->getProgress() == search_progress) {
-
-                        // เขียน by pass cooldown
-                    }   
-                }
-
-                // ดัก case break;
-            }
+            break;
         }
+
+        // Update Goomba
+        this->goomba_manager->update();
     }
     void reDraw() {
         

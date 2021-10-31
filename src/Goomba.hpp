@@ -18,6 +18,8 @@ private:
     int insert_delay;
 
     bool is_leader;
+
+    bool is_found_match;
     int color;
 
     std::vector <Position> path_points;
@@ -33,7 +35,7 @@ public:
         
         // Set Progress
         this->move_cooldown = 0;
-        this->move_cooldown_max_default = 10;
+        this->move_cooldown_max_default = 20;
         this->move_cooldown_max = this->move_cooldown_max_default;
         this->progress = 0;
         this->progress_max = this->path_points.size();
@@ -52,6 +54,7 @@ public:
         this->is_leader = false;
 
         // Color
+        this->is_found_match = false;
         this->color = KornRandom::randomIntRange(3, 7);
     }
 
@@ -64,9 +67,16 @@ public:
 
         return this->move_cooldown_max;
     }
-    void setMoveCooldownMax() {
+    void setMoveCooldownMax(int move_cooldown_max = 0) {
 
-        this->move_cooldown_max = this->move_cooldown_max_default;
+        if(move_cooldown_max == 0) {
+            
+            this->move_cooldown_max = this->move_cooldown_max_default;
+        }
+        else {
+
+            this->move_cooldown_max = move_cooldown_max;
+        }
     }
     void setMoveCooldown(int move_cooldown = 0) {
 
@@ -77,7 +87,7 @@ public:
         else {
 
             this->move_cooldown = this->move_cooldown_max;
-            if(this->move_cooldown_max > 0) this->move_cooldown_max -= 1;
+            if(this->move_cooldown_max > 0) this->move_cooldown_max -= 4;
         }
     }
     int getMoveCooldown() {
@@ -154,6 +164,14 @@ public:
     int getColor() {
 
         return this->color;
+    }
+    void setFoundMatch(bool is_found_match) {
+
+        this->is_found_match = is_found_match;
+    }
+    bool getFoundMatch() {
+
+        return this->is_found_match;
     }
     
     // Leader

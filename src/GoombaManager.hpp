@@ -220,8 +220,15 @@ public:
                 }
 
                 int progress_max = this->goombas.at(i)->getProgressMax();
-                int goomba_cooldown = (((float)leader_progress_max / (float)progress_max) * 40);
+                int goomba_speed = 50;
+                int goomba_cooldown = ((float)leader_progress_max / (float)progress_max) * goomba_speed;
+                goomba_cooldown -= (float(1) - ((float)leader_progress_max / (float)progress_max)) * ((float)goomba_speed / (float)2);
+                if((float)leader_progress_max > (float)progress_max - ((float)progress_max / (float)6)) {
+
+                    goomba_cooldown += ((float)leader_progress_max / (float)progress_max) * ((float)goomba_speed * 2);
+                }
                 this->goombas.at(i)->setMoveCooldown(goomba_cooldown);
+
 
                 // Remove Collide Leader
                 for(int j = 0; j < this->goombas.size(); j++) {
@@ -284,14 +291,14 @@ public:
             int group_head_color;
             for(int j = 0; j < this->goombas.size(); j++) {
                 
-                if(this->goombas.at(j)->getProgress() == goomba_progress + 1) {
+                if(this->goombas.at(j)->getProgress() == goomba_progress) {
 
                     group_head_color = this->goombas.at(j)->getColor();
                 }
             }
 
             // Check If Match
-            if(last_group_tail_color != group_head_color) continue;
+            if(last_group_tail_color != group_head_color && last_group_tail_color != C_WHITE) continue;
             
             // Move Backward
             int leader_progress_start = this->goombas.at(i)->getProgress();
@@ -317,6 +324,9 @@ public:
             }
 
             this->goombas.at(i)->setMoveCooldown();
+            this->goombas.at(i)->setFoundMatch(true);
+
+            if(last_group_tail_color == C_WHITE) this->goombas.at(i)->setFoundMatch(false);
         }
     }   
     void addGoomba(Goomba* goomba) {
@@ -387,38 +397,24 @@ public:
             this->goombas.at(i)->draw();
         }
     }
-    
-    // Functions
-    void update() {
+    std::vector <int> getAllColor() {
 
-        // Update Goombas
-        updateGoombas();
-    }
-    void draw() {
+        std::vector <int> colors;
+        for(int i = 0; i < this->goombas.size(); i++) {
 
-        // Draw Path
-        int path_points_size = this->path_points.size();
-        for(int i = 0; i < path_points_size; i++) {
+            int insert_color = this->goombas.at(i)->getColor();
+            if(insert_color == C_WHITE) continue;
 
-            // Draw Path
-            if(i < path_points_size - 1) {
+            bool is_push = true;
+            for(int j = 0; j < colors.size(); j++) {
 
-                KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, '.', C_GRAY);
-            }
+                if(colors.at(j) == insert_color) false;
+            }   
+            if(!is_push) continue;
+
+            colors.push_back(insert_color);
         }
-
-        // Draw Goombas
-        drawGoombas();
-
-        // Draw Start Point And End Point
-        for(int i = 0; i < path_points_size; i++) {
-
-            // Start Point
-            if(i == 0) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'S');
-
-            // End Point
-            if(i == path_points_size - 1) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'E');
-        }
+        return colors;
     }
 
     // Goomba Set
@@ -452,5 +448,38 @@ public:
             if(last_find == last_progress) break;
         }
         return last_progress;
+    }
+    
+    // Functions
+    void update() {
+
+        // Update Goombas
+        updateGoombas();
+    }
+    void draw() {
+
+        // Draw Path
+        int path_points_size = this->path_points.size();
+        for(int i = 0; i < path_points_size; i++) {
+
+            // Draw Path
+            if(i < path_points_size - 1) {
+
+                KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, '.', C_GRAY);
+            }
+        }
+
+        // Draw Goombas
+        drawGoombas();
+
+        // Draw Start Point And End Point
+        for(int i = 0; i < path_points_size; i++) {
+
+            // Start Point
+            if(i == 0) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'S');
+
+            // End Point
+            if(i == path_points_size - 1) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'E');
+        }
     }
 };

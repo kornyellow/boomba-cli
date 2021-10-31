@@ -8,11 +8,12 @@
 #define C_CYAN     7
 
 // Includes
-#include <curses.h>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
+#include <curses.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
