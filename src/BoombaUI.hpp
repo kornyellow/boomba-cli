@@ -44,28 +44,3 @@ public:
         }
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-Enemy::Enemy(int type) {
-
-    if(type == 0) {
-
-        sprite.setSprite();
-        this->hp = 10;
-    } else if(type == 1) {
-
-        sprite.setSprite
-        this->hp = 20;
-    }
-}

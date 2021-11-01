@@ -1,3 +1,7 @@
+#pragma once
+
+// Includes
+
 class Position {
 public:
 
