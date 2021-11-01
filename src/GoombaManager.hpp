@@ -422,6 +422,10 @@ public:
 
         this->goomba_set.push_back(goomba_set);
     }
+    std::vector <std::string> getGoombaSet() {
+
+        return this->goomba_set;
+    }   
 
     // Get Goomba Lists
     std::vector <Goomba*> getGoombas() {

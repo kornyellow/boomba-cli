@@ -28,7 +28,7 @@ private:
     GoombaManager *goomba_manager;
 
     // Window
-    WINDOW* window;
+    WINDOW *window;
 
 public:
 
@@ -41,7 +41,7 @@ public:
         this->window = this->board->getWindow();
 
         // Boomba UI
-        this->boomba_ui = new BoombaUI();
+        this->boomba_ui = new BoombaUI(this->window);
 
         // Goomba
         this->goomba_manager = new GoombaManager(this->window);
@@ -58,10 +58,7 @@ public:
         this->goomba_manager->addPath(40, 14);
         this->goomba_manager->calculatePath();
 
-        this->goomba_manager->addGoombaSet("YYYYGGGGGRRRGGGG#");
-        this->goomba_manager->addGoombaSet("YYYYGGGGGRRRGGGG#");
-        this->goomba_manager->addGoombaSet("YYYYGGGGGRRRGGGG#");
-        this->goomba_manager->addGoombaSet("YYYYGGGGGRRRGGGG#");
+        this->goomba_manager->addGoombaSet("GGGYYYRRR#");
         
         this->is_running = true;
         this->colorSet("RGY");
@@ -193,7 +190,9 @@ public:
         }   
 
         // Destroy Matches
-        if(match >= 3) {
+        int want_match = 3;
+        if(!is_insert) want_match = 4;
+        if(match >= want_match) {
 
             for(int k = -find_left + 1; k <= find_right - 1; k++) {
 
@@ -220,7 +219,7 @@ public:
         if(this->input == 'q') this->is_running = false;
 
         // Shoot Fruit
-        if(this->input == 'x') { 
+        if(this->input == 'x' && this->fruits.empty()) { 
 
             int fruit_color = this->boomba->fruitShoot();
 
@@ -239,7 +238,7 @@ public:
 
         // Update Boomba
         this->boomba->update(this->input);
-        if(!this->goomba_manager->getAllColor().empty()) this->boomba->setColorSet(this->goomba_manager->getAllColor());
+        if(!this->goomba_manager->getAllColor().empty() && this->goomba_manager->getGoombaSet().empty()) this->boomba->setColorSet(this->goomba_manager->getAllColor());
 
         // Update Boomba Scope
         int scope = this->boomba->getY();
@@ -269,6 +268,15 @@ public:
         for(int i = 0; i < this->fruits.size(); i++) {
 
             this->fruits.at(i).update();
+
+            // Update Fruit Out Of Bound
+            if(this->fruits.at(i).getY() < 0) {
+
+                // Remove Fruit
+                this->fruits.erase(this->fruits.begin() + i);
+
+                break;
+            }
 
             // Check If Fruit Collide With Goomba
             for(int j = 0; j < this->goomba_manager->getGoombas().size(); j++) {
@@ -321,9 +329,6 @@ public:
         // Clear Buffer
         this->board->boardClear();
 
-        // Draw UI
-        this->boomba_ui->draw();
-
         // Draw Goomba
         this->goomba_manager->draw();
 
@@ -335,6 +340,9 @@ public:
 
             this->fruits.at(i).draw();
         }
+
+        // Draw UI
+        this->boomba_ui->draw();
 
         // Put Buffer To Console
         this->board->boardRefresh();

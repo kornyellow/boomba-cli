@@ -43,16 +43,16 @@ public:
     }
     void boardAddBorder() {
 
-        mvwhline(this->window, 0, 0, '-', this->window_width);
-        mvwhline(this->window, this->window_height - 1, 0, '-', this->window_width);
+        mvwhline(this->window, 0, 0, '=', this->window_width);
+        mvwhline(this->window, this->window_height - 1, 0, '=', this->window_width);
 
         mvwvline(this->window, 0, 0, '|', this->window_height);
         mvwvline(this->window, 0, this->window_width - 1, '|', this->window_height);
 
-        mvwprintw(this->window, 0, 0, "+");
-        mvwprintw(this->window, 0, this->window_width - 1, "+");
-        mvwprintw(this->window, this->window_height - 1, 0, "+");
-        mvwprintw(this->window, this->window_height - 1, this->window_width - 1, "+");
+        mvwprintw(this->window, 0, 0, "#");
+        mvwprintw(this->window, 0, this->window_width - 1, "#");
+        mvwprintw(this->window, this->window_height - 1, 0, "#");
+        mvwprintw(this->window, this->window_height - 1, this->window_width - 1, "#");
     }
     void boardClear() {
 

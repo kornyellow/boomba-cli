@@ -28,7 +28,7 @@
 int main() {
 
     // Initialize
-    srand(time(NULL));
+    srand(time(0));
     initscr();
     raw();
     noecho();

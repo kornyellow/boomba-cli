@@ -11,6 +11,13 @@ public:
         mvwprintw(window, y, x, text);
         wattroff(window, COLOR_PAIR(color));
     }
+    static void drawText(WINDOW* window, int x, int y, int text, int color = C_WHITE) {
+
+        wattron(window, COLOR_PAIR(color));
+        mvwprintw(window, y, x, std::to_string(text).c_str());
+        wattroff(window, COLOR_PAIR(color));
+    }
+
     static void drawCharacter(WINDOW* window, int x, int y, chtype character, int color = C_WHITE) {
 
         wattron(window, COLOR_PAIR(color));
