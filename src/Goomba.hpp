@@ -152,7 +152,7 @@ public:
         if(this->insert_delay > 0) {
 
             this->insert_delay --;
-            KornDraw::drawCharacter(this->window, this->x, this->y, '=', this->color);
+            KornDraw::drawCharacter(this->window, this->x, this->y, '*', this->color);
         }
     }
 

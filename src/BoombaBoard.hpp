@@ -21,7 +21,7 @@ public:
         // Window
         this->window_width = window_width;
         this->window_height = window_height;
-        this->window = newwin(this->window_height, this->window_width, 1, (this->console_width/2) - (this->window_width/2));
+        this->window = newwin(this->window_height, this->window_width, (this->console_height/2) - (this->window_height/2), (this->console_width/2) - (this->window_width/2));
 
         boardInitialize();
     }
@@ -35,7 +35,8 @@ public:
     void boardInitialize() {
 
         // Framerate
-        wtimeout(this->window, 10);
+        intrflush(this->window, true);
+        wtimeout(this->window, 20);
 
         // Initialize Board
         boardClear();
@@ -43,8 +44,8 @@ public:
     }
     void boardAddBorder() {
 
-        mvwhline(this->window, 0, 0, '=', this->window_width);
-        mvwhline(this->window, this->window_height - 1, 0, '=', this->window_width);
+        mvwhline(this->window, 0, 0, '-', this->window_width);
+        mvwhline(this->window, this->window_height - 1, 0, '-', this->window_width);
 
         mvwvline(this->window, 0, 0, '|', this->window_height);
         mvwvline(this->window, 0, this->window_width - 1, '|', this->window_height);
@@ -60,13 +61,13 @@ public:
         boardAddBorder();
     }
     void boardRefresh() {
-
+        
         wrefresh(this->window);
     }
 
     // Input
     chtype getInput() {
-
+        
         return wgetch(this->window);
     }
 };

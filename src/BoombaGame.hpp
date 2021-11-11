@@ -30,12 +30,406 @@ private:
     // Window
     WINDOW *window;
 
+    // Map List
+    std::vector <std::string> map_list;
+
+    // Difficulty List
+    std::vector <std::string> difficulty_list;
+
+    // Menu
+    int menu_selection;
+    int map_selection;
+    int difficulty_selection;
+
+    // Game Functions
+    int game_state;
+    int changing_state;
+    int state_to_change;
+
+    void gameMenu() {
+
+        if(this->game_state != GAME_MENU) return;
+
+        if(this->changing_state >= 0) return;
+
+        // Menu Navigation
+        if(this->input == 'A') {
+            
+            this->menu_selection --;
+            if(this->menu_selection < 0) this->menu_selection = 2;
+        }
+        else if(this->input == 'B') {
+
+            this->menu_selection ++;
+            if(this->menu_selection > 2) this->menu_selection = 0;
+        }
+    
+        // Menu Enter
+        if(this->input == 'x') {
+            
+            switch(this->menu_selection) {
+            
+            case 0 : // PLAY
+                this->setState(GAME_MENU_PLAY);
+                break;
+
+            case 1 : // HIGH SCORE
+                this->setState(GAME_MENU_HIGHSCORE);
+                break;
+
+            case 2 : // QUIT
+                this->setState(GAME_QUIT);
+                break;
+
+            default :
+                break;
+            }
+        }
+    }
+    void gameMenuDraw() {
+
+        if(this->game_state != GAME_MENU) return;
+
+        std::vector <std::string> menu_entry = {
+            "Play",
+            "High Score",
+            "Quit",
+        };
+
+        // Print Menu Selection
+        for(int i = 0; i < menu_entry.size(); i++) {
+
+            if(this->menu_selection == i) {
+            
+                if(this->changing_state >= 0) KornDraw::drawTextCenter(this->window, 7 + (i * 3), "*  " + menu_entry.at(i) + "  *", C_LIGHT_GRAY);
+                else KornDraw::drawTextCenter(this->window, 7 + (i * 3), "->  " + menu_entry.at(i) + "  <-", C_LIGHT_GRAY);
+            }
+        }
+
+        // Print Title
+        KornDraw::drawTextCenter(this->window, 2, "#----------------#", C_LIGHT_GRAY);
+        KornDraw::drawTextCenter(this->window, 3, "|   BoombaGame   |", C_LIGHT_GRAY);       
+        KornDraw::drawTextCenter(this->window, 4, "#----------------#", C_LIGHT_GRAY);
+        KornDraw::drawTextCenter(this->window, 3, "BoombaGame", C_WHITE);   
+
+        // Print Name
+        KornDraw::drawText(this->window, 3, 18, "Made by Korn (64010009)", C_LIGHT_GRAY);
+
+        // Print Key
+        KornDraw::drawText(this->window, 29, 17, "    X : OK", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 29, 18, "Arrow : Navigation", C_LIGHT_GRAY);
+
+        // Print Menu
+        KornDraw::drawTextCenter(this->window,  7, menu_entry.at(0), C_GREEN);
+        KornDraw::drawTextCenter(this->window, 10, menu_entry.at(1), C_YELLOW);
+        KornDraw::drawTextCenter(this->window, 13, menu_entry.at(2), C_RED);
+        
+        if(this->menu_selection == 0 && this->changing_state >= 0) KornDraw::drawTextCenter(this->window,  7, menu_entry.at(0), C_GRAY);
+        if(this->menu_selection == 1 && this->changing_state >= 0) KornDraw::drawTextCenter(this->window, 10, menu_entry.at(1), C_GRAY);
+        if(this->menu_selection == 2 && this->changing_state >= 0) KornDraw::drawTextCenter(this->window, 13, menu_entry.at(2), C_GRAY);
+    }
+
+    void gameMenuPlay() {
+
+        if(this->game_state != GAME_MENU_PLAY) return;
+
+        // Menu Navigation
+        if(this->input == 'A') {
+            
+            this->menu_selection --;
+            if(this->menu_selection < 0) this->menu_selection = 3;
+        }
+        else if(this->input == 'B') {
+
+            this->menu_selection ++;
+            if(this->menu_selection > 3) this->menu_selection = 0;
+        }
+
+        // Menu Enter
+        switch(this->menu_selection) {
+        
+        case 0 : // MAP SELECTION
+            if(this->input == 'D') {
+
+                this->map_selection --;
+                if(map_selection < 0) map_selection = 3;
+            }
+            else if(this->input == 'C') {
+
+                this->map_selection ++;
+                if(map_selection > 3) map_selection = 0;
+            }
+            break;
+
+        case 1 : // DIFFICULTY SELECTION
+            if(this->input == 'D') {
+
+                this->difficulty_selection --;
+                if(difficulty_selection < 0) difficulty_selection = 4;
+            }
+            else if(this->input == 'C') {
+
+                this->difficulty_selection ++;
+                if(difficulty_selection > 4) difficulty_selection = 0;
+            }
+            break;
+
+        case 2 : // START
+            if(this->input == 'x') {
+
+                this->setState(GAME_RUN);
+            }
+            break;
+
+        case 3 : // BACK
+            if(this->input == 'x') {
+
+                this->setState(GAME_MENU);
+            }
+            break;
+
+        default : 
+            break;
+        }
+    }
+    void gameMenuPlayDraw() {
+
+        if(this->game_state != GAME_MENU_PLAY) return;
+
+        std::vector <std::string> menu_entry = {
+            "Maps",
+            "Difficulty",
+            "Play",
+            "Back",
+        };
+
+        // Print Menu Selection
+        for(int i = 0; i < menu_entry.size(); i++) {
+            
+            if(this->menu_selection == i) {
+                if(this->menu_selection == 0) {
+
+                    KornDraw::drawTextCenter(this->window, 7 + (i * 3), "<-  " + this->map_list.at(this->map_selection) + "  ->", C_LIGHT_GRAY);
+                }
+                if(this->menu_selection == 1) {
+
+                    KornDraw::drawTextCenter(this->window, 7 + (i * 3), "<-  " + this->difficulty_list.at(this->difficulty_selection) + "  ->", C_LIGHT_GRAY);
+                }
+                if(this->menu_selection == 2 || this->menu_selection == 3) {
+                    
+                    if(this->changing_state >= 0) KornDraw::drawTextCenter(this->window, 7 + (i * 3), "*  " + menu_entry.at(i) + "  *", C_LIGHT_GRAY);
+                    else KornDraw::drawTextCenter(this->window, 7 + (i * 3), "->  " + menu_entry.at(i) + "  <-", C_LIGHT_GRAY);
+                }
+            }
+        }
+
+        // Print Title
+        KornDraw::drawTextCenter(this->window, 2, "#----------------#", C_LIGHT_GRAY);
+        KornDraw::drawTextCenter(this->window, 3, "|     Option     |", C_LIGHT_GRAY);       
+        KornDraw::drawTextCenter(this->window, 4, "#----------------#", C_LIGHT_GRAY);
+        KornDraw::drawTextCenter(this->window, 3, "Option", C_WHITE);
+
+        // Print Name
+        KornDraw::drawText(this->window, 3, 18, "Made by Korn (64010009)", C_LIGHT_GRAY);
+
+        // Print Key
+        KornDraw::drawText(this->window, 29, 17, "    X : OK", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 29, 18, "Arrow : Navigation", C_LIGHT_GRAY);
+
+        // Print Menu
+        KornDraw::drawTextCenter(this->window,  6, "Maps", C_WHITE);
+        KornDraw::drawTextCenter(this->window,  7, this->map_list.at(this->map_selection), C_YELLOW);
+
+        KornDraw::drawTextCenter(this->window,  9, "Difficulty", C_WHITE);
+        KornDraw::drawTextCenter(this->window, 10, this->difficulty_list.at(this->difficulty_selection), C_GREEN);
+
+        if(this->difficulty_selection == 0) {
+            KornDraw::drawTextCenter(this->window, 10, this->difficulty_list.at(this->difficulty_selection), C_GREEN);
+        }
+        if(this->difficulty_selection == 1) {
+            KornDraw::drawTextCenter(this->window, 10, this->difficulty_list.at(this->difficulty_selection), C_YELLOW);
+        }
+        if(this->difficulty_selection == 2) {
+            KornDraw::drawTextCenter(this->window, 10, this->difficulty_list.at(this->difficulty_selection), C_RED);
+        }
+        if(this->difficulty_selection == 3) {
+            KornDraw::drawTextCenter(this->window, 10, this->difficulty_list.at(this->difficulty_selection), C_MAGENTA);
+        }
+        if(this->difficulty_selection == 4) {
+            KornDraw::drawText(this->window, 19, 10, this->difficulty_list.at(this->difficulty_selection), C_BLUE);
+        }
+
+        KornDraw::drawTextCenter(this->window, 13, "Play", C_CYAN);
+
+        KornDraw::drawTextCenter(this->window, 16, "Back", C_RED);
+
+        if(this->menu_selection == 2 && this->changing_state >= 0) KornDraw::drawTextCenter(this->window, 13, "Play", C_GRAY);
+        if(this->menu_selection == 3 && this->changing_state >= 0) KornDraw::drawTextCenter(this->window, 16, "Back", C_GRAY);
+    }
+
+    void gameMenuHighscore() {
+
+        if(this->game_state != GAME_MENU_HIGHSCORE) return;
+    }
+    void gameMenuHighscoreDraw() {
+
+        if(this->game_state != GAME_MENU_HIGHSCORE) return;
+    }
+
+    void gameRun() {
+
+        if(this->game_state != GAME_RUN) return;
+
+        // Close Game
+        if(this->input == 'q') this->is_running = false;
+
+        // Shoot Fruit
+        if(this->input == 'x' && this->fruits.empty()) { 
+
+            int fruit_color = this->boomba->fruitShoot();
+
+            Fruit fruit(this->boomba->getX() + 3, this->boomba->getY() - 1, this->window);
+            fruit.setFruitColor(fruit_color);
+            this->fruits.push_back(fruit);
+        }
+
+        // Swap Fruit
+        if(this->input == 'c') {
+
+            this->boomba->fruitSwap();
+        }
+
+        // Update Boomba
+        this->boomba->update(this->input);
+        if(!this->goomba_manager->getAllColor().empty() && this->goomba_manager->getGoombaSet().empty()) this->boomba->setColorSet(this->goomba_manager->getAllColor());
+
+        // Update Boomba Scope
+        int scope = this->boomba->getY();
+        while(true) {
+
+            scope --;
+
+            // Check If Scope Hit The Goomba
+            bool is_collide = false;
+            for(int i = 0; i < this->goomba_manager->getGoombas().size(); i++) {
+
+                int goomba_progress = this->goomba_manager->getGoombas().at(i)->getProgress();
+                if(this->boomba->getX() + 3 == this->goomba_manager->getGoombas().at(i)->getPosition(goomba_progress).x && scope == this->goomba_manager->getGoombas().at(i)->getPosition(goomba_progress).y + 1) {
+                    
+                    is_collide = true;
+                    break;
+                }
+            }
+            if(is_collide || scope <= 1) break;
+        }
+        this->boomba->setScope(scope);
+
+        // Update Boomba UI
+        this->boomba_ui->update(this->input);
+
+        // Update Fruit
+        for(int i = 0; i < this->fruits.size(); i++) {
+
+            this->fruits.at(i).update();
+
+            // Update Fruit Out Of Bound
+            if(this->fruits.at(i).getY() < 0) {
+
+                // Remove Fruit
+                this->fruits.erase(this->fruits.begin() + i);
+
+                break;
+            }
+
+            // Check If Fruit Collide With Goomba
+            for(int j = 0; j < this->goomba_manager->getGoombas().size(); j++) {
+
+                int goomba_progress = this->goomba_manager->getGoombas().at(j)->getProgress();
+                Position goomba_position = this->goomba_manager->getGoombas().at(j)->getPosition(goomba_progress);
+            
+                if((int)this->fruits.at(i).getX() == goomba_position.x && (int)this->fruits.at(i).getY() + 1 == goomba_position.y) {
+                       
+                    // Destroy Match
+                    this->destroyMatch(goomba_progress, this->fruits.at(i).getColor());
+
+                    // Remove Fruit
+                    this->fruits.erase(this->fruits.begin() + i);
+
+                    break;
+                }
+            }
+        }
+
+        // Update Collided Goombas
+        for(int i = 0; i < this->goomba_manager->getGoombas().size(); i++) {
+
+            if(!this->goomba_manager->getGoombas().at(i)->getFoundMatch()) continue;
+
+            // Check If Not Leader
+            bool is_leader = true;
+            int goomba_progress = this->goomba_manager->getGoombas().at(i)->getProgress();
+            for(int j = 0; j < this->goomba_manager->getGoombas().size(); j++) {
+
+                if(this->goomba_manager->getGoombas().at(j)->getProgress() == goomba_progress - 1) {
+
+                    is_leader = false;
+                    break;
+                }
+            }
+            if(is_leader) continue;
+
+            // Remove Match
+            this->destroyMatch(this->goomba_manager->getGoombas().at(i)->getProgress(), this->goomba_manager->getGoombas().at(i)->getColor(), false);
+
+            break;
+        }
+
+        // Update Goomba
+        this->goomba_manager->update();
+    }
+    void gameRunDraw() {
+
+        if(this->game_state != GAME_RUN) return;
+
+        // Draw Goomba
+        this->goomba_manager->draw();
+
+        // Draw Boomba
+        this->boomba->draw();
+
+        // Draw Fruit
+        for(int i = 0; i < this->fruits.size(); i++) {
+
+            this->fruits.at(i).draw();
+        }
+
+        // Draw UI
+        this->boomba_ui->draw();
+    }
+
+    void gameEnd() {
+
+        if(this->game_state != GAME_END) return;
+    }
+    void gameEndDraw() {
+
+        if(this->game_state != GAME_END) return;
+    }
+
+    void gameQuit() {
+
+        if(this->game_state != GAME_QUIT) return;
+
+        this->is_running = false;
+        return;
+    }   
+
 public:
 
     BoombaGame() {
 
         // Board
-        this->board = new BoombaBoard(49, 20);
+        this->board = new BoombaBoard(SCREEN_WIDTH, SCREEN_HEIGHT);
         
         // Window
         this->window = this->board->getWindow();
@@ -58,13 +452,41 @@ public:
         this->goomba_manager->addPath(40, 14);
         this->goomba_manager->calculatePath();
 
-        this->goomba_manager->addGoombaSet("GGGYYYRRR#");
+        this->goomba_manager->addGoombaSet("YYYRRRRGGGYYYRRRYYYYYYGGGGGRRRRRYYYYYGGGGGGGYYYRRR#");
+        this->goomba_manager->addGoombaSet("YYYRRRRGGGYYYRRRYYYYYYGGGGGGGYYYRRR#");
         
         this->is_running = true;
         this->colorSet("RGY");
 
         // Boomba
         this->boomba = new Boomba(16, 17, this->window, this->color_set);
+        
+        // Game State
+        this->game_state = GAME_MENU;
+        this->state_to_change = GAME_MENU;
+        this->changing_state = -1;
+
+        // Map List
+        this->map_list = {
+            "Road",
+            "Spiral",
+            "Stairs",
+            "Mountain",
+        };
+
+        // Diffuculty List
+        this->difficulty_list = {
+            "Easy",
+            "Normal",
+            "Hard",
+            "Extremes",
+            "Impossible",
+        };
+
+        // Menu
+        this->menu_selection = 0;
+        this->difficulty_selection = 0;
+        this->map_selection = 0;
     }
     ~BoombaGame() {
 
@@ -209,140 +631,49 @@ public:
         }
     }
 
-    // Functions
-    void processInput() {
-        
-        // Get Input
-        this->input = this->board->getInput();
+    // States
+    void setState(int game_state) {
 
-        // Close Game
-        if(this->input == 'q') this->is_running = false;
-
-        // Shoot Fruit
-        if(this->input == 'x' && this->fruits.empty()) { 
-
-            int fruit_color = this->boomba->fruitShoot();
-
-            Fruit fruit(this->boomba->getX() + 3, this->boomba->getY() - 1, this->window);
-            fruit.setFruitColor(fruit_color);
-            this->fruits.push_back(fruit);
-        }
-
-        // Swap Fruit
-        if(this->input == 'c') {
-
-            this->boomba->fruitSwap();
-        }
+        this->changing_state = 10;
+        this->state_to_change = game_state;
     }
+
+    // Functions
     void updateState() {
 
-        // Update Boomba
-        this->boomba->update(this->input);
-        if(!this->goomba_manager->getAllColor().empty() && this->goomba_manager->getGoombaSet().empty()) this->boomba->setColorSet(this->goomba_manager->getAllColor());
-
-        // Update Boomba Scope
-        int scope = this->boomba->getY();
-        while(true) {
-
-            scope --;
-
-            // Check If Scope Hit The Goomba
-            bool is_collide = false;
-            for(int i = 0; i < this->goomba_manager->getGoombas().size(); i++) {
-
-                int goomba_progress = this->goomba_manager->getGoombas().at(i)->getProgress();
-                if(this->boomba->getX() + 3 == this->goomba_manager->getGoombas().at(i)->getPosition(goomba_progress).x && scope == this->goomba_manager->getGoombas().at(i)->getPosition(goomba_progress).y + 1) {
-                    
-                    is_collide = true;
-                    break;
-                }
-            }
-            if(is_collide || scope <= 1) break;
-        }
-        this->boomba->setScope(scope);
-
-        // Update Boomba UI
-        this->boomba_ui->update(this->input);
-
-        // Update Fruit
-        for(int i = 0; i < this->fruits.size(); i++) {
-
-            this->fruits.at(i).update();
-
-            // Update Fruit Out Of Bound
-            if(this->fruits.at(i).getY() < 0) {
-
-                // Remove Fruit
-                this->fruits.erase(this->fruits.begin() + i);
-
-                break;
-            }
-
-            // Check If Fruit Collide With Goomba
-            for(int j = 0; j < this->goomba_manager->getGoombas().size(); j++) {
-
-                int goomba_progress = this->goomba_manager->getGoombas().at(j)->getProgress();
-                Position goomba_position = this->goomba_manager->getGoombas().at(j)->getPosition(goomba_progress);
+        // Get Input
+        this->input = this->board->getInput();
+        
+        // Game State
+        if(this->changing_state > 0) this->changing_state --;
+        else if(this->changing_state == 0) {
             
-                if((int)this->fruits.at(i).getX() == goomba_position.x && (int)this->fruits.at(i).getY() + 1 == goomba_position.y) {
-                       
-                    // Destroy Match
-                    this->destroyMatch(goomba_progress, this->fruits.at(i).getColor());
-
-                    // Remove Fruit
-                    this->fruits.erase(this->fruits.begin() + i);
-
-                    break;
-                }
-            }
+            this->game_state = this->state_to_change;
+            this->changing_state --;
+            this->menu_selection = 0;
+            this->difficulty_selection = 0;
+            this->map_selection = 0;
         }
 
-        // Update Collided Goombas
-        for(int i = 0; i < this->goomba_manager->getGoombas().size(); i++) {
-
-            if(!this->goomba_manager->getGoombas().at(i)->getFoundMatch()) continue;
-
-            // Check If Not Leader
-            bool is_leader = true;
-            int goomba_progress = this->goomba_manager->getGoombas().at(i)->getProgress();
-            for(int j = 0; j < this->goomba_manager->getGoombas().size(); j++) {
-
-                if(this->goomba_manager->getGoombas().at(j)->getProgress() == goomba_progress - 1) {
-
-                    is_leader = false;
-                    break;
-                }
-            }
-            if(is_leader) continue;
-
-            // Remove Match
-            this->destroyMatch(this->goomba_manager->getGoombas().at(i)->getProgress(), this->goomba_manager->getGoombas().at(i)->getColor(), false);
-
-            break;
-        }
-
-        // Update Goomba
-        this->goomba_manager->update();
+        // Run Game States
+        this->gameMenu();
+        this->gameMenuPlay();
+        this->gameMenuHighscore();
+        this->gameRun();
+        this->gameEnd();   
+        this->gameQuit();     
     }
     void reDraw() {
         
         // Clear Buffer
         this->board->boardClear();
 
-        // Draw Goomba
-        this->goomba_manager->draw();
-
-        // Draw Boomba
-        this->boomba->draw();
-
-        // Draw Fruit
-        for(int i = 0; i < this->fruits.size(); i++) {
-
-            this->fruits.at(i).draw();
-        }
-
-        // Draw UI
-        this->boomba_ui->draw();
+        // Draw Game States
+        this->gameMenuDraw();
+        this->gameMenuPlayDraw();
+        this->gameMenuHighscoreDraw();
+        this->gameRunDraw();
+        this->gameEndDraw();  
 
         // Put Buffer To Console
         this->board->boardRefresh();
