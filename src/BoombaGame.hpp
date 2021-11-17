@@ -36,10 +36,29 @@ private:
     // Difficulty List
     std::vector <std::string> difficulty_list;
 
+    // Multiplier
+    float multiplier;
+    int multiplier_delay;
+
     // Menu
     int menu_selection;
     int map_selection;
     int difficulty_selection;
+
+    // Initialize
+    void initializeColor() {
+
+        start_color();
+        init_pair(C_WHITE      , 15 , COLOR_BLACK);
+        init_pair(C_RED        ,  9 , COLOR_BLACK);
+        init_pair(C_GRAY       ,  8 , COLOR_BLACK);
+        init_pair(C_GREEN      , 10 , COLOR_BLACK);
+        init_pair(C_YELLOW     , 11 , COLOR_BLACK);
+        init_pair(C_MAGENTA    , 13 , COLOR_BLACK);
+        init_pair(C_CYAN       , 14 , COLOR_BLACK);
+        init_pair(C_LIGHT_GRAY ,  7 , COLOR_BLACK);
+        init_pair(C_BLUE       , 12 , COLOR_BLACK);
+    }
 
     // Game Functions
     int game_state;
@@ -233,7 +252,8 @@ private:
         KornDraw::drawText(this->window, 3, 18, "Made by Korn (64010009)", C_LIGHT_GRAY);
 
         // Print Key
-        KornDraw::drawText(this->window, 29, 17, "    X : OK", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 29, 16, "    X : Shoot", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 29, 17, "    C : Swap", C_LIGHT_GRAY);
         KornDraw::drawText(this->window, 29, 18, "Arrow : Navigation", C_LIGHT_GRAY);
 
         // Print Menu
@@ -303,6 +323,10 @@ private:
         this->boomba->update(this->input);
         if(!this->goomba_manager->getAllColor().empty() && this->goomba_manager->getGoombaSet().empty()) this->boomba->setColorSet(this->goomba_manager->getAllColor());
 
+        // Update Multiplier
+        if(this->multiplier_delay < 0) this->multiplier = 1;
+        else this->multiplier_delay --;
+
         // Update Boomba Scope
         int scope = this->boomba->getY();
         while(true) {
@@ -350,7 +374,12 @@ private:
                 if((int)this->fruits.at(i).getX() == goomba_position.x && (int)this->fruits.at(i).getY() + 1 == goomba_position.y) {
                        
                     // Destroy Match
-                    this->destroyMatch(goomba_progress, this->fruits.at(i).getColor());
+                    float base_score = 20.0f;
+
+                    int matches_destroyed = this->destroyMatch(goomba_progress, this->fruits.at(i).getColor());
+
+                    // Add Score
+                    this->boomba_ui->addScore(base_score * (float)matches_destroyed);
 
                     // Remove Fruit
                     this->fruits.erase(this->fruits.begin() + i);
@@ -379,10 +408,41 @@ private:
             if(is_leader) continue;
 
             // Remove Match
-            this->destroyMatch(this->goomba_manager->getGoombas().at(i)->getProgress(), this->goomba_manager->getGoombas().at(i)->getColor(), false);
+            float base_score = 20.0f;
+
+            int matches_destroyed = this->destroyMatch(this->goomba_manager->getGoombas().at(i)->getProgress(), this->goomba_manager->getGoombas().at(i)->getColor(), false);
+            
+            // Add Score
+            this->boomba_ui->addScore(base_score * (float)matches_destroyed * this->multiplier);
+
+            // Add Multiplier
+            this->multiplier += 0.1;
+            this->multiplier_delay = 60;
 
             break;
         }
+
+        // Update Dead Leader
+        for(int i = 0; i < this->goomba_manager->getGoombas().size(); i++) {
+
+            if(!this->goomba_manager->getGoombas().at(i)->getLeader()) continue;
+            
+            int goomba_progress = this->goomba_manager->getGoombas().at(i)->getProgress();
+            int goomba_progress_max = this->goomba_manager->getMaxProgress(goomba_progress) - 1;
+            if(goomba_progress != goomba_progress_max) continue;
+
+            this->goomba_manager->deleteGoomba(i);
+
+            // Add Score
+            float base_score = 200.0f;
+            this->boomba_ui->addScore(base_score * this->multiplier);
+
+            // Add Multiplier
+            this->multiplier = 1;
+            this->multiplier_delay = 0;
+
+            break;
+        }   
 
         // Update Goomba
         this->goomba_manager->update();
@@ -428,6 +488,9 @@ public:
 
     BoombaGame() {
 
+        // Colors
+        this->initializeColor();
+
         // Board
         this->board = new BoombaBoard(SCREEN_WIDTH, SCREEN_HEIGHT);
         
@@ -439,7 +502,8 @@ public:
 
         // Goomba
         this->goomba_manager = new GoombaManager(this->window);
-        
+
+        // Load Map
         this->goomba_manager->addPath(8 , 2);
         this->goomba_manager->addPath(40, 2);
         this->goomba_manager->addPath(40, 5);
@@ -451,11 +515,6 @@ public:
         this->goomba_manager->addPath(8 , 14);
         this->goomba_manager->addPath(40, 14);
         this->goomba_manager->calculatePath();
-
-        this->goomba_manager->addGoombaSet("YYYRRRRGGGYYYRRRYYYYYYGGGGGRRRRRYYYYYGGGGGGGYYYRRR#");
-        this->goomba_manager->addGoombaSet("YYYRRRRGGGYYYRRRYYYYYYGGGGGGGYYYRRR#");
-        
-        this->is_running = true;
         this->colorSet("RGY");
 
         // Boomba
@@ -487,6 +546,8 @@ public:
         this->menu_selection = 0;
         this->difficulty_selection = 0;
         this->map_selection = 0;
+
+        this->is_running = true;
     }
     ~BoombaGame() {
 
@@ -518,7 +579,7 @@ public:
     }
 
     // Fruit
-    void destroyMatch(int goomba_progress, int match_color, bool is_insert = true) {
+    int destroyMatch(int goomba_progress, int match_color, bool is_insert = true) {
 
         // Get Highest Progress
         int highest_progress = 0;
@@ -628,7 +689,9 @@ public:
                     }
                 }
             }
+            return find_left + find_right - 2;
         }
+        return 0;
     }
 
     // States

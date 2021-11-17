@@ -50,18 +50,6 @@ int main() {
     resizeterm(22, 55);
     curs_set(false);
 
-    // Setup Colors
-    start_color();
-    init_pair(C_WHITE      , 15 , COLOR_BLACK);
-    init_pair(C_RED        ,  9 , COLOR_BLACK);
-    init_pair(C_GRAY       ,  8 , COLOR_BLACK);
-    init_pair(C_GREEN      , 10 , COLOR_BLACK);
-    init_pair(C_YELLOW     , 11 , COLOR_BLACK);
-    init_pair(C_MAGENTA    , 13 , COLOR_BLACK);
-    init_pair(C_CYAN       , 14 , COLOR_BLACK);
-    init_pair(C_LIGHT_GRAY ,  7 , COLOR_BLACK);
-    init_pair(C_BLUE       , 12 , COLOR_BLACK);
-
     // Game Loop
     BoombaGame game;
     while(game.isRunning()) {

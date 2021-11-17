@@ -9,7 +9,7 @@ private:
     WINDOW *window;
 
     // Score
-    int score;
+    unsigned int score;
 
 public:
 
@@ -42,5 +42,19 @@ public:
             
             KornDraw::drawCharacter(this->window, 12 + i, 0, score_string.at(i));
         }
+    }
+
+    // Score
+    void addScore(int score) {
+
+        this->score += score;
+    }
+    void setScore(unsigned int score) {
+
+        this->score = score;
+    }
+    unsigned int getScore() {
+
+        return this->score;
     }
 };
