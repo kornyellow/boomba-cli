@@ -9,7 +9,7 @@ private:
     WINDOW *window;
 
     // Score
-    unsigned int score;
+    unsigned long int score;
 
 public:
 
@@ -38,22 +38,22 @@ public:
         while(score_string.size() < 8) score_string.insert(score_string.begin(), '0');
         score_string.push_back(' ');
 
-        for(int i = 0; i < score_string.size(); i++) {
+        for(unsigned long int i = 0; i < score_string.size(); i++) {
             
             KornDraw::drawCharacter(this->window, 12 + i, 0, score_string.at(i));
         }
     }
 
     // Score
-    void addScore(int score) {
+    void addScore(unsigned long int score) {
 
         this->score += score;
     }
-    void setScore(unsigned int score) {
+    void setScore(unsigned long int score) {
 
         this->score = score;
     }
-    unsigned int getScore() {
+    unsigned long int getScore() {
 
         return this->score;
     }

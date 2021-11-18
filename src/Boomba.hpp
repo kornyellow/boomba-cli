@@ -7,27 +7,21 @@ class Boomba : public Entity {
 private:
 
     // Fruits
-    int fruit_first;
-    int fruit_second;
+    unsigned short int fruit_first;
+    unsigned short int fruit_second;
 
-    std::vector <int> color_set;
+    std::vector <unsigned short int> color_set;
 
     // Shooting
-    int shoot_frame;
-    int max_scope_frame;
-    int scope;
+    unsigned long int shoot_frame;
+    unsigned long int max_scope_frame;
+    unsigned long int scope;
 
 public:
 
-    Boomba(int x, int y, WINDOW *window, std::vector <int> color_set) {
+    Boomba(unsigned long int x, unsigned long int y, WINDOW *window) {
 
-        init(x, y, window);
-
-        this->setColorSet(color_set);
-
-        // Fruits
-        this->fruit_first = this->color_set.at(KornRandom::randomIntRange(0, this->color_set.size() - 1));
-        this->fruit_second = this->color_set.at(KornRandom::randomIntRange(0, this->color_set.size() - 1));
+        this->init(x, y, window);
 
         // Shooting
         this->max_scope_frame = 0;
@@ -36,9 +30,9 @@ public:
     }
 
     // Fruits Functions
-    int fruitShoot() {
+    unsigned short int fruitShoot() {
 
-        int shoot_fruit = this->fruit_first;
+        unsigned short int shoot_fruit = this->fruit_first;
         this->fruit_first = this->fruit_second;
         this->fruit_second = this->color_set.at(KornRandom::randomIntRange(0, this->color_set.size() - 1));
 
@@ -52,19 +46,24 @@ public:
         this->fruit_second = this->fruit_first - this->fruit_second;
         this->fruit_first = this->fruit_first - this->fruit_second;
     }
-    
+    void initRandomColor() {
+
+        this->fruit_first = this->color_set.at(KornRandom::randomInt(this->color_set.size() - 1));
+        this->fruit_second = this->color_set.at(KornRandom::randomInt(this->color_set.size() - 1));
+    }   
+
     // Colors
-    void setColorSet(std::vector <int> color_set) {
+    void setColorSet(std::vector <unsigned short int> color_set) {
 
         this->color_set.clear();
-        for(int i = 0; i < color_set.size(); i++) {
+        for(unsigned long int i = 0; i < color_set.size(); i++) {
 
             this->color_set.push_back(color_set.at(i));
         }
     }
 
     // Shoot Functions
-    void setScope(int x) {
+    void setScope(unsigned long int x) {
 
         this->scope = x;
     }
@@ -73,18 +72,18 @@ public:
     void update(chtype input) {
 
         if(input == 'D' && this->x - 1 > 0) this->x --;
-        if(input == 'C' && this->x + 7 < this->window->_maxx) this->x ++;
+        if(input == 'C' && (short int)this->x + 7 < this->window->_maxx) this->x ++;
 
         // Set Color
         bool is_match_first = false;
         bool is_match_second = false;
-        for(int i = 0; i < this->color_set.size(); i++) {
+        for(unsigned long int i = 0; i < this->color_set.size(); i++) {
 
             if(this->fruit_first == this->color_set.at(i)) is_match_first = true;
             if(this->fruit_second == this->color_set.at(i)) is_match_second = true;
         }
-        if(!is_match_first) this->fruit_first = this->color_set.at(KornRandom::randomIntRange(0, this->color_set.size() - 1));
-        if(!is_match_second) this->fruit_second = this->color_set.at(KornRandom::randomIntRange(0, this->color_set.size() - 1));
+        if(!is_match_first) this->fruit_first = this->color_set.at(KornRandom::randomInt(this->color_set.size() - 1));
+        if(!is_match_second) this->fruit_second = this->color_set.at(KornRandom::randomInt(this->color_set.size() - 1));
     }
     void draw() {
         
@@ -94,7 +93,7 @@ public:
             "(\"o|o\")",
         };
 
-        for(int i = 0; i < player_icon.size(); i++) {
+        for(unsigned long int i = 0; i < player_icon.size(); i++) {
             
             KornDraw::drawText(this->window, this->x, this->y + i, player_icon.at(i).c_str());
         }
@@ -125,7 +124,7 @@ public:
         if(this->max_scope_frame > 0) {
             
             this->max_scope_frame --;
-            for(int i = this->y - 1; i > this->scope; i--) {
+            for(unsigned long int i = this->y - 1; i > this->scope; i--) {
 
                 KornDraw::drawCharacter(this->window, this->x + 3, i, '\'', this->fruit_first);
             }

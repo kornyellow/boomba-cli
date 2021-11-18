@@ -6,21 +6,21 @@
 class Goomba {
 private:
 
-    int x;
-    int y;
+    unsigned long int x;
+    unsigned long int y;
     
-    int progress;
-    int progress_max;
-    int move_cooldown;
-    int move_cooldown_max;
-    int move_cooldown_max_default;
+    long int progress;
+    long int progress_max;
+    long int move_cooldown;
+    long int move_cooldown_max;
+    long int move_cooldown_max_default;
 
-    int insert_delay;
+    unsigned long int insert_delay;
 
     bool is_leader;
 
     bool is_found_match;
-    int color;
+    unsigned short int color;
 
     std::vector <Position> path_points;
 
@@ -35,7 +35,7 @@ public:
         
         // Set Progress
         this->move_cooldown = 0;
-        this->move_cooldown_max_default = 20;
+        this->move_cooldown_max_default = 12;
         this->move_cooldown_max = this->move_cooldown_max_default;
         this->progress = 0;
         this->progress_max = this->path_points.size();
@@ -59,15 +59,15 @@ public:
     }
 
     // Movement
-    int getMoveCooldownMaxDefault() {
+    long int getMoveCooldownMaxDefault() {
 
         return this->move_cooldown_max_default;
     }
-    int getMoveCooldownMax() {
+    long int getMoveCooldownMax() {
 
         return this->move_cooldown_max;
     }
-    void setMoveCooldownMax(int move_cooldown_max = 0) {
+    void setMoveCooldownMax(long int move_cooldown_max = 0) {
 
         if(move_cooldown_max == 0) {
             
@@ -78,7 +78,7 @@ public:
             this->move_cooldown_max = move_cooldown_max;
         }
     }
-    void setMoveCooldown(int move_cooldown = 0) {
+    void setMoveCooldown(long int move_cooldown = 0) {
 
         if(this->is_leader) {
             
@@ -90,28 +90,28 @@ public:
             if(this->move_cooldown_max > 0) this->move_cooldown_max -= 4;
         }
     }
-    int getMoveCooldown() {
+    long int getMoveCooldown() {
 
         return this->move_cooldown;
     }
-    void setProgress(int progress) {
+    void setProgress(long int progress) {
 
         this->progress = progress;
     }
-    int getProgressMax() {
+    long int getProgressMax() {
 
         return this->progress_max;
     }
-    int getProgress() {
+    long int getProgress() {
 
         return this->progress;
     }
-    void setPosition(int progress) {
+    void setPosition(long int progress) {
 
         this->x = this->path_points.at(progress).x;
         this->y = this->path_points.at(progress).y;
     }
-    Position getPosition(int progress) {
+    Position getPosition(long int progress) {
 
         return this->path_points.at(progress);
     }
@@ -129,7 +129,7 @@ public:
         this->progress--;
         this->setPosition(this->progress);
     }
-    void setInsertDelay(int insert_delay) {
+    void setInsertDelay(unsigned long int insert_delay) {
 
         this->insert_delay = insert_delay;
     }
@@ -157,11 +157,11 @@ public:
     }
 
     // Color
-    void setColor(int color) {
+    void setColor(unsigned short int color) {
 
         this->color = color;
     }
-    int getColor() {
+    unsigned short int getColor() {
 
         return this->color;
     }

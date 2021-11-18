@@ -5,8 +5,8 @@
 class Entity {
 protected:
 
-    int x;
-    int y;
+    unsigned long int x;
+    unsigned long int y;
 
     bool is_show;
 
@@ -15,7 +15,7 @@ protected:
 public:
 
     // Initialize Function
-    void init(int x, int y, WINDOW *window) {
+    void init(unsigned long int x, unsigned long int y, WINDOW *window) {
 
         this->x = x;
         this->y = y;
@@ -26,11 +26,11 @@ public:
     }
 
     // Accessors
-    int getX() {
+    unsigned long int getX() {
 
         return this->x;
     }
-    int getY() {
+    unsigned long int getY() {
 
         return this->y;
     }

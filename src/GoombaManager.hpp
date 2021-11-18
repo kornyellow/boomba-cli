@@ -1,6 +1,7 @@
 #pragma once
 
 // Includes
+#include "Mixer.hpp"
 #include "Goomba.hpp"
 #include "KornDraw.hpp"
 
@@ -13,53 +14,92 @@ private:
     
     // Goombas
     std::vector<Goomba*> goombas;
-    int goomba_spawn_cooldown;
-    int goomba_spawn_rate;
+    long int goomba_spawn_cooldown;
+    long int goomba_spawn_rate;
     
     std::vector<std::string> goomba_set;
+    std::string color_set;
+
+    // Goomba Set Generator
+    unsigned short int fuzzyness;
+    unsigned short int min_length;
+    unsigned short int max_length;
+    unsigned short int color_min_length;
+    unsigned short int color_max_length;
+    unsigned short int color_max_count;
+    std::string goombaSetGenerate() {
+
+        unsigned short int total_length = KornRandom::randomIntRange(min_length, max_length);
+        std::string generated_goombas = "";
+        unsigned short int generated_length = 0;
+        for(unsigned short int i = 0; i < this->color_max_count; i++) {
+
+            if(generated_length >= total_length) break;
+
+            unsigned short int choose_color = this->color_set.at(KornRandom::randomInt(this->color_set.size() - 1));
+            unsigned short int total_color_length = KornRandom::randomIntRange(this->color_min_length, this->color_max_length - 1);
+            for(unsigned short int j = 0; j < total_color_length; j++) {
+                
+                generated_goombas.push_back(choose_color);
+                generated_length ++;
+            }
+        }
+
+        return generated_goombas + "#";
+    }   
+
+    // Mixer
+    Mixer* mixer;
 
     // Window
     WINDOW* window;
 
 public:
 
-    GoombaManager(WINDOW* window) {
+    GoombaManager(WINDOW* window, Mixer* mixer) {
 
+        this->mixer = mixer;
         this->window = window;
 
         this->goomba_spawn_cooldown = 0;
-        this->goomba_spawn_rate = 100;
+        this->goomba_spawn_rate = 1800;
+
+        this->min_length = 25;
+        this->max_length = 45;
+        this->color_min_length = 2;
+        this->color_max_length = 5;
+        this->color_max_count = 10;
     }
 
     // Paths
-    void addPath(int x, int y) {
+    void addPath(unsigned long int x, unsigned long int y) {
 
         Position position(x, y);
         this->paths.push_back(position);
     }
-    Position getPath(int index) {
+    Position getPath(unsigned long int index) {
 
         return this->paths.at(index);
     }
     void calculatePath() {
 
-        for(int i = 0; i < this->paths.size(); i++) {
+        for(unsigned long int i = 0; i < this->paths.size(); i++) {
 
             if(i < this->paths.size() - 1) {
 
-                int scan_y_dir = KornMath::sign(this->paths.at(i + 1).y - this->paths.at(i).y);
+                unsigned long int scan_y_dir = KornMath::sign(this->paths.at(i + 1).y - this->paths.at(i).y);
                 if(scan_y_dir == 0) scan_y_dir = 1;
                 
                 if(scan_y_dir == 1) {
-                    for(int y = this->paths.at(i).y; y <= this->paths.at(i + 1).y; y++) {
-                        int scan_x_dir = KornMath::sign(this->paths.at(i + 1).x - this->paths.at(i).x);
+                    for(unsigned long int y = this->paths.at(i).y; y <= this->paths.at(i + 1).y; y++) {
+                        unsigned long int scan_x_dir = KornMath::sign(this->paths.at(i + 1).x - this->paths.at(i).x);
                         if(scan_x_dir == 0) scan_x_dir = 1;
                         
                         if(scan_x_dir == 1) {
-                            for(int x = this->paths.at(i).x; x <= this->paths.at(i + 1).x; x++) {
+                            for(unsigned long int x = this->paths.at(i).x; x <= this->paths.at(i + 1).x; x++) {
                                 
                                 bool is_duplicate = false;
-                                for(int j = 0; j < this->path_points.size(); j++) {
+                                for(unsigned long int j = 0; j < this->path_points.size(); j++) {
 
                                     if(x == this->path_points.at(j).x && y == this->path_points.at(j).y) {
                                         
@@ -74,10 +114,10 @@ public:
                             }
                         }
                         else {
-                            for(int x = this->paths.at(i).x; x >= this->paths.at(i + 1).x; x--) {
+                            for(unsigned long int x = this->paths.at(i).x; x >= this->paths.at(i + 1).x; x--) {
                                 
                                 bool is_duplicate = false;
-                                for(int j = 0; j < this->path_points.size(); j++) {
+                                for(unsigned long int j = 0; j < this->path_points.size(); j++) {
 
                                     if(x == this->path_points.at(j).x && y == this->path_points.at(j).y) {
                                         
@@ -94,15 +134,15 @@ public:
                     }
                 }
                 else {
-                    for(int y = this->paths.at(i).y; y >= this->paths.at(i + 1).y; y--) {
+                    for(unsigned long int y = this->paths.at(i).y; y >= this->paths.at(i + 1).y; y--) {
                         int scan_x_dir = KornMath::sign(this->paths.at(i + 1).x - this->paths.at(i).x);
                         if(scan_x_dir == 0) scan_x_dir = 1;
                         
                         if(scan_x_dir == 1) {
-                            for(int x = this->paths.at(i).x; x <= this->paths.at(i + 1).x; x++) {
+                            for(unsigned long int x = this->paths.at(i).x; x <= this->paths.at(i + 1).x; x++) {
                                 
                                 bool is_duplicate = false;
-                                for(int j = 0; j < this->path_points.size(); j++) {
+                                for(unsigned long int j = 0; j < this->path_points.size(); j++) {
 
                                     if(x == this->path_points.at(j).x && y == this->path_points.at(j).y) {
                                         
@@ -117,10 +157,10 @@ public:
                             }
                         }
                         else {
-                            for(int x = this->paths.at(i).x; x >= this->paths.at(i + 1).x; x--) {
+                            for(unsigned long int x = this->paths.at(i).x; x >= this->paths.at(i + 1).x; x--) {
                                 
                                 bool is_duplicate = false;
-                                for(int j = 0; j < this->path_points.size(); j++) {
+                                for(unsigned long int j = 0; j < this->path_points.size(); j++) {
 
                                     if(x == this->path_points.at(j).x && y == this->path_points.at(j).y) {
                                         
@@ -137,11 +177,11 @@ public:
                     }
                 }
 
-                for(int y = this->paths.at(i).y; y <= this->paths.at(i + 1).y; y++) {
-                    for(int x = this->paths.at(i).x; x <= this->paths.at(i + 1).x; x++) {
+                for(unsigned long int y = this->paths.at(i).y; y <= this->paths.at(i + 1).y; y++) {
+                    for(unsigned long int x = this->paths.at(i).x; x <= this->paths.at(i + 1).x; x++) {
                         
                         bool is_duplicate = false;
-                        for(int j = 0; j < this->path_points.size(); j++) {
+                        for(unsigned long int j = 0; j < this->path_points.size(); j++) {
 
                             if(x == this->path_points.at(j).x && y == this->path_points.at(j).y) {
                                 
@@ -170,17 +210,17 @@ public:
         if(this->spawnGoomba()) {
 
             // Get Progress Max
-            int progress_max = 0;
+            long int progress_max = 0;
             while(true) {
-                int progress_max_old = progress_max;
-                for(int i = 0; i < this->goombas.size(); i++) {
+                long int progress_max_old = progress_max;
+                for(unsigned long int i = 0; i < this->goombas.size(); i++) {
 
                     if(this->goombas.at(i)->getProgress() == progress_max) progress_max ++;
                 }
                 if(progress_max == progress_max_old) break;
             }
             // Move To Spawn New
-            for(int i = 0; i < this->goombas.size(); i++) {
+            for(unsigned long int i = 0; i < this->goombas.size(); i++) {
 
                 if(this->goombas.at(i)->getProgress() >= 0 && this->goombas.at(i)->getProgress() < progress_max) {
 
@@ -189,73 +229,18 @@ public:
             }
         }
 
-        // Move Leader
-        for(int i = 0; i < this->goombas.size(); i++) {
-
-            // Get Leader
-            if(this->goombas.at(i)->getLeader()) {
-                    
-                if(this->goombas.at(i)->getMoveCooldown() > 0) continue;
-
-                int leader_progress_start = this->goombas.at(i)->getProgress();
-                int leader_progress_max = leader_progress_start;
-                
-                // Get Progress Max
-                while(true) {
-                    int leader_progress_max_old = leader_progress_max;
-                    for(int j = 0; j < this->goombas.size(); j++) {
-
-                        if(this->goombas.at(j)->getProgress() == leader_progress_max) leader_progress_max ++;
-                    }
-                    if(leader_progress_max == leader_progress_max_old) break;
-                }
-
-                // Move Goombas In Leader
-                for(int j = 0; j < this->goombas.size(); j++) {
-
-                    if(this->goombas.at(j)->getProgress() >= leader_progress_start && this->goombas.at(j)->getProgress() < leader_progress_max) {
-
-                        this->goombas.at(j)->moveForward();
-                    }
-                }
-
-                int progress_max = this->goombas.at(i)->getProgressMax();
-                int goomba_speed = 50;
-                int goomba_cooldown = ((float)leader_progress_max / (float)progress_max) * goomba_speed;
-                goomba_cooldown -= (float(1) - ((float)leader_progress_max / (float)progress_max)) * ((float)goomba_speed / (float)2);
-                if((float)leader_progress_max > (float)progress_max - ((float)progress_max / (float)6)) {
-
-                    goomba_cooldown += ((float)leader_progress_max / (float)progress_max) * ((float)goomba_speed * 2);
-                }
-                this->goombas.at(i)->setMoveCooldown(goomba_cooldown);
-
-
-                // Remove Collide Leader
-                for(int j = 0; j < this->goombas.size(); j++) {
-
-                    if(this->goombas.at(j)->getProgress() == leader_progress_max + 1) {
-                        
-                        if(!this->goombas.at(j)->getLeader()) continue;
-
-                        this->deleteGoomba(j);
-                        break;
-                    }
-                }
-            }
-        }
-
         // Move Back
-        for(int i = 0; i < this->goombas.size(); i++) {
+        for(unsigned long int i = 0; i < this->goombas.size(); i++) {
 
             if(this->goombas.at(i)->getLeader()) continue;
 
             bool is_leader = true;
-            int goomba_progress = this->goombas.at(i)->getProgress();
+            long int goomba_progress = this->goombas.at(i)->getProgress();
             
             if(this->goombas.at(i)->getMoveCooldown() > 0) continue;
 
             // Find Tail
-            for(int j = 0; j < this->goombas.size(); j++) {
+            for(unsigned long int j = 0; j < this->goombas.size(); j++) {
 
                 if(this->goombas.at(j)->getProgress() == goomba_progress - 1) {
 
@@ -270,11 +255,11 @@ public:
             }
 
             // Find Last Group Tail Color
-            int last_group_tail_color = -1;
-            int search_progress = goomba_progress - 1;
+            short int last_group_tail_color = -1;
+            long int search_progress = goomba_progress - 1;
             while(true) {
 
-                for(int j = 0; j < this->goombas.size(); j++) {
+                for(unsigned long int j = 0; j < this->goombas.size(); j++) {
 
                     if(this->goombas.at(j)->getProgress() == search_progress) {
 
@@ -288,8 +273,8 @@ public:
             }
 
             // Get Group Head Color
-            int group_head_color;
-            for(int j = 0; j < this->goombas.size(); j++) {
+            unsigned short int group_head_color;
+            for(unsigned long int j = 0; j < this->goombas.size(); j++) {
                 
                 if(this->goombas.at(j)->getProgress() == goomba_progress) {
 
@@ -298,16 +283,16 @@ public:
             }
 
             // Check If Match
-            if(last_group_tail_color != group_head_color && last_group_tail_color != C_WHITE) continue;
+            if(last_group_tail_color != group_head_color && last_group_tail_color != C_GRAY) continue;
             
             // Move Backward
-            int leader_progress_start = this->goombas.at(i)->getProgress();
-            int leader_progress_max = leader_progress_start;
+            long int leader_progress_start = this->goombas.at(i)->getProgress();
+            long int leader_progress_max = leader_progress_start;
             
             // Get Progress Max
             while(true) {
-                int leader_progress_max_old = leader_progress_max;
-                for(int j = 0; j < this->goombas.size(); j++) {
+                long int leader_progress_max_old = leader_progress_max;
+                for(unsigned long int j = 0; j < this->goombas.size(); j++) {
 
                     if(this->goombas.at(j)->getProgress() == leader_progress_max) leader_progress_max ++;
                 }
@@ -315,7 +300,7 @@ public:
             }
 
             // Move Goombas In Leader
-            for(int j = 0; j < this->goombas.size(); j++) {
+            for(unsigned long int j = 0; j < this->goombas.size(); j++) {
 
                 if(this->goombas.at(j)->getProgress() >= leader_progress_start && this->goombas.at(j)->getProgress() < leader_progress_max) {
 
@@ -326,7 +311,70 @@ public:
             this->goombas.at(i)->setMoveCooldown();
             this->goombas.at(i)->setFoundMatch(true);
 
-            if(last_group_tail_color == C_WHITE) this->goombas.at(i)->setFoundMatch(false);
+            if(last_group_tail_color == C_GRAY) this->goombas.at(i)->setFoundMatch(false);
+        }
+
+        // Move Leader
+        for(unsigned long int i = 0; i < this->goombas.size(); i++) {
+
+            // Get Leader
+            if(this->goombas.at(i)->getLeader()) {
+                    
+                if(this->goombas.at(i)->getMoveCooldown() > 0) continue;
+
+                long int leader_progress_start = this->goombas.at(i)->getProgress();
+                long int leader_progress_max = leader_progress_start;
+                
+                // Get Progress Max
+                while(true) {
+                    long int leader_progress_max_old = leader_progress_max;
+                    for(unsigned long int j = 0; j < this->goombas.size(); j++) {
+
+                        if(this->goombas.at(j)->getProgress() == leader_progress_max) leader_progress_max ++;
+                    }
+                    if(leader_progress_max == leader_progress_max_old) break;
+                }
+
+                // Move Goombas In Leader
+                for(unsigned long int j = 0; j < this->goombas.size(); j++) {
+
+                    if(this->goombas.at(j)->getProgress() >= leader_progress_start && this->goombas.at(j)->getProgress() < leader_progress_max) {
+
+                        this->goombas.at(j)->moveForward();
+                        this->goombas.at(j)->setMoveCooldownMax();
+                    }
+                }
+
+                long int progress_max = this->goombas.at(i)->getProgressMax();
+                unsigned long int goomba_speed = 30;
+                long int goomba_cooldown = ((float)leader_progress_max / (float)progress_max) * goomba_speed;
+                goomba_cooldown -= (float(1) - ((float)leader_progress_max / (float)progress_max)) * ((float)goomba_speed / (float)2);
+                if((float)leader_progress_max > (float)progress_max - ((float)progress_max / (float)6)) {
+
+                    goomba_cooldown += ((float)leader_progress_max / (float)progress_max) * ((float)goomba_speed);
+                }
+                this->goombas.at(i)->setMoveCooldown(goomba_cooldown);
+
+
+                // Remove Collide Leader
+                bool is_found_collided_leader = false;
+                for(unsigned long int j = 0; j < this->goombas.size(); j++) {
+
+                    if(this->goombas.at(j)->getProgress() == leader_progress_max + 1) {
+                        
+                        if(!this->goombas.at(j)->getLeader()) continue;
+
+                        this->deleteGoomba(j);
+                        this->mixer->playSoundEffect(SFX_CONNECT);
+                        is_found_collided_leader = true;
+                        break;
+                    }
+                }
+                if(is_found_collided_leader) {
+
+                    this->moveGoomba();
+                }
+            }
         }
     }   
     void addGoomba(Goomba* goomba) {
@@ -338,22 +386,21 @@ public:
         // Return If In Cooldown
         if(this->goomba_spawn_cooldown > 0) return false;
 
-        for(int i = 0; i < this->goombas.size(); i++) {
-
-            if(this->goombas.at(i)->getProgress() < 2) false;
-        }
-
         // Get Goomba Color
-        if(this->goomba_set.empty()) return false;
+        if(this->goomba_set.empty()) {
+
+            this->addGoombaSet(this->goombaSetGenerate());
+            return false;
+        }
         char goomba_color_text = this->goomba_set.at(0).at(0);
         this->goomba_set.at(0).erase(this->goomba_set.at(0).begin());
         if(this->goomba_set.at(0).empty()) this->goomba_set.erase(this->goomba_set.begin());
 
         // Calculate Color
-        int goomba_color;
+        unsigned short int goomba_color;
         switch (goomba_color_text) {
         case '#':
-            goomba_color = C_WHITE;
+            goomba_color = C_GRAY;
             break;
         case 'R':
             goomba_color = C_RED;
@@ -364,10 +411,19 @@ public:
         case 'Y':
             goomba_color = C_YELLOW;
             break;
+        case 'B':
+            goomba_color = C_BLUE;
+            break;
+        case 'M':
+            goomba_color = C_MAGENTA;
+            break;
+        case 'W':
+            goomba_color = C_WHITE;
+            break;
         }
 
         Goomba* goomba = new Goomba(this->window, this->path_points);
-        if(goomba_color == C_WHITE) {
+        if(goomba_color == C_GRAY) {
             goomba->setLeader(true);
             this->goomba_spawn_cooldown = this->goomba_spawn_rate;
         }
@@ -385,30 +441,30 @@ public:
         this->moveGoomba();
 
         // Update Goombas
-        for(int i = 0; i < this->goombas.size(); i++) {
+        for(unsigned long int i = 0; i < this->goombas.size(); i++) {
 
             this->goombas.at(i)->update();
         }
     }
     void drawGoombas() {
 
-        for(int i = 0; i < this->goombas.size(); i++) {
+        for(unsigned long int i = 0; i < this->goombas.size(); i++) {
 
             this->goombas.at(i)->draw();
         }
     }
-    std::vector <int> getAllColor() {
+    std::vector <unsigned short int> getAllColor() {
 
-        std::vector <int> colors;
-        for(int i = 0; i < this->goombas.size(); i++) {
+        std::vector <unsigned short int> colors;
+        for(unsigned long int i = 0; i < this->goombas.size(); i++) {
 
-            int insert_color = this->goombas.at(i)->getColor();
-            if(insert_color == C_WHITE) continue;
+            unsigned short int insert_color = this->goombas.at(i)->getColor();
+            if(insert_color == C_GRAY) continue;
 
             bool is_push = true;
-            for(int j = 0; j < colors.size(); j++) {
+            for(unsigned long int j = 0; j < colors.size(); j++) {
 
-                if(colors.at(j) == insert_color) false;
+                if(colors.at(j) == insert_color) is_push = false;
             }   
             if(!is_push) continue;
 
@@ -432,17 +488,39 @@ public:
 
         return this->goombas;
     }
-    void deleteGoomba(int index) {
+    void deleteGoomba(unsigned long int index) {
 
         this->goombas.erase(this->goombas.begin() + index);
     }
-    int getMaxProgress(int start) {
+    long int getMaxProgressLeader(unsigned long int start) {
 
-        int last_progress = start;
+        long int last_progress = start;
+        long int lastest_progress = start;
+        while(true) {
+            
+            last_progress ++;
+            for(unsigned long int i = 0; i < this->goombas.size(); i++) {
+
+                if(this->goombas.at(i)->getProgress() == last_progress) {
+
+                    if(this->goombas.at(i)->getLeader()) {
+                        return lastest_progress;
+                    }
+                    lastest_progress = last_progress;
+                    break;
+                }
+            }
+            if((unsigned long int)last_progress >= this->getPathPoints().size()) break;
+        }
+        return lastest_progress;
+    }
+    long int getMaxProgress(long int start) {
+
+        long int last_progress = start;
         while(true) {
 
-            int last_find = last_progress;
-            for(int i = 0; i < this->goombas.size(); i++) {
+            long int last_find = last_progress;
+            for(unsigned long int i = 0; i < this->goombas.size(); i++) {
 
                 if(this->goombas.at(i)->getProgress() == last_progress) {
                     
@@ -454,17 +532,26 @@ public:
         return last_progress;
     }
     
+    // Color
+    void setColorSet(std::string color_set) {
+
+        this->color_set = color_set;
+    }   
+
     // Functions
     void update() {
 
+        // Update Rate
+        if(this->goombas.empty()) this->goomba_spawn_cooldown = 0; 
+
         // Update Goombas
-        updateGoombas();
+        this->updateGoombas();
     }
     void draw() {
 
         // Draw Path
-        int path_points_size = this->path_points.size();
-        for(int i = 0; i < path_points_size; i++) {
+        unsigned long int path_points_size = this->path_points.size();
+        for(unsigned long int i = 0; i < path_points_size; i++) {
 
             // Draw Path
             if(i < path_points_size - 1) {
@@ -477,7 +564,7 @@ public:
         drawGoombas();
 
         // Draw Start Point And End Point
-        for(int i = 0; i < path_points_size; i++) {
+        for(unsigned long int i = 0; i < path_points_size; i++) {
 
             // Start Point
             if(i == 0) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'S');

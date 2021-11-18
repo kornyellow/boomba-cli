@@ -8,26 +8,26 @@ class Fruit : public Entity {
 private:
 
     // Color
-    int fruit_color;
+    unsigned short int fruit_color;
 
     // Movement
-    int move_delay;
-    int move_speed;
+    unsigned long int move_delay;
+    unsigned long int move_speed;
 
 public:
 
-    Fruit(int x, int y, WINDOW *window) {
+    Fruit(unsigned long int x, unsigned long int y, WINDOW *window) {
 
-        init(x, y, window);
+        this->init(x, y, window);
 
         this->move_delay = 0;
-        this->move_speed = 2;
+        this->move_speed = 1;
     }
 
     // Functions
     void update() {
 
-        if(this->move_delay < 0) {
+        if(this->move_delay <= 0) {
 
             this->move_delay = this->move_speed;
             this->y --;
@@ -36,20 +36,20 @@ public:
     }
     void draw() {
 
-        KornDraw::drawCharacter(this->window, (int)this->x, (int)this->y + 1, '@', this->fruit_color);
-        KornDraw::drawCharacter(this->window, (int)this->x, (int)this->y + 2, '|', C_GRAY);
+        KornDraw::drawCharacter(this->window, (unsigned long int)this->x, (unsigned long int)this->y + 1, '@', this->fruit_color);
+        KornDraw::drawCharacter(this->window, (unsigned long int)this->x, (unsigned long int)this->y + 2, '|', C_GRAY);
     }
 
     // Colors
-    void setFruitColor(int color) {
+    void setFruitColor(unsigned short int color) {
 
         this->fruit_color = color;
     }  
-    void setColor(int color) {
+    void setColor(unsigned short int color) {
 
         this->fruit_color = color;
     }
-    int getColor() {
+    unsigned short int getColor() {
 
         return this->fruit_color;
     }

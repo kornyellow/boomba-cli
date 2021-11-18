@@ -7,7 +7,7 @@ public :
 
     static int randomInt(int a) {
 
-        return rand() % a + 1;
+        return rand() % (a + 1);
     }
 
     static int randomIntRange(int a, int b) {

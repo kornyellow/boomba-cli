@@ -6,14 +6,14 @@ class BoombaBoard {
 private:
 
     WINDOW *window;
-    int window_width;
-    int window_height;
-    int console_width;
-    int console_height;
+    unsigned long int window_width;
+    unsigned long int window_height;
+    unsigned long int console_width;
+    unsigned long int console_height;
 
 public:
 
-    BoombaBoard(int window_width, int window_height) {
+    BoombaBoard(unsigned long int window_width, unsigned long int window_height) {
 
         // Get Console Size
         getmaxyx(stdscr, this->console_height, this->console_width);
