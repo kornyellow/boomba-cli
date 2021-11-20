@@ -34,8 +34,24 @@ public:
 
         return this->y;
     }
+    void setX(unsigned long int) {
+
+        this->x = x;
+    }
+    void setY(unsigned long int) {
+
+        this->y = y;
+    }
     WINDOW* getWindow() {
 
         return this->window;
+    }
+    bool isShow() {
+
+        return this->is_show;
+    }
+    void setShow(bool is_show) {
+
+        this->is_show = is_show;
     }
 };

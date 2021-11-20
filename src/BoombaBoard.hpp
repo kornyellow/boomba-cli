@@ -11,9 +11,18 @@ private:
     unsigned long int console_width;
     unsigned long int console_height;
 
+    bool is_blink;
+    bool blink;
+    char blink_delay;
+
 public:
 
     BoombaBoard(unsigned long int window_width, unsigned long int window_height) {
+
+        // Blink
+        this->is_blink = false;
+        this->blink = false;
+        this->blink_delay = 0;
 
         // Get Console Size
         getmaxyx(stdscr, this->console_height, this->console_width);
@@ -36,13 +45,27 @@ public:
 
         // Framerate
         intrflush(this->window, true);
-        wtimeout(this->window, 20);
+        wtimeout(this->window, TIMEOUT);
 
         // Initialize Board
         boardClear();
         boardRefresh();
     }
     void boardAddBorder() {
+
+        if(!this->is_blink) this->blink_delay = 0;
+        else {
+            
+            if(this->blink_delay == 0) {
+                
+                this->blink = !this->blink;
+                this->blink_delay = 60;
+            }
+            else this->blink_delay --;
+
+            if(this->blink) wattron(this->window, COLOR_PAIR(C_RED));
+            if(!this->blink) wattron(this->window, COLOR_PAIR(C_GRAY));
+        }
 
         mvwhline(this->window, 0, 0, '-', this->window_width);
         mvwhline(this->window, this->window_height - 1, 0, '-', this->window_width);
@@ -54,6 +77,9 @@ public:
         mvwprintw(this->window, 0, this->window_width - 1, "#");
         mvwprintw(this->window, this->window_height - 1, 0, "#");
         mvwprintw(this->window, this->window_height - 1, this->window_width - 1, "#");
+
+        wattroff(this->window, COLOR_PAIR(C_RED));
+        wattroff(this->window, COLOR_PAIR(C_GRAY));
     }
     void boardClear() {
 
@@ -70,4 +96,14 @@ public:
         
         return wgetch(this->window);
     }
+
+    // Blink
+    bool isBlink() {
+
+        return this->is_blink;
+    }
+    void setIsBlink(bool is_blink) {
+
+        this->is_blink = is_blink;
+    }   
 };

@@ -23,6 +23,18 @@ public:
         mvwprintw(window, y, x, std::to_string(text).c_str());
         wattroff(window, COLOR_PAIR(color));
     }
+    static void drawText(WINDOW* window, int x, int y, unsigned long int text, int color = C_WHITE) {
+
+        wattron(window, COLOR_PAIR(color));
+        mvwprintw(window, y, x, std::to_string(text).c_str());
+        wattroff(window, COLOR_PAIR(color));
+    }
+    static void drawText(WINDOW* window, int x, int y, float text, int color = C_WHITE) {
+
+        wattron(window, COLOR_PAIR(color));
+        mvwprintw(window, y, x, std::to_string(text).c_str());
+        wattroff(window, COLOR_PAIR(color));
+    }
 
     static void drawTextCenter(WINDOW* window, int y, std::string text, int color = C_WHITE) {
 

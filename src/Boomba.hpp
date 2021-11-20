@@ -71,8 +71,11 @@ public:
     // Functions
     void update(chtype input) {
 
-        if(input == 'D' && this->x - 1 > 0) this->x --;
-        if(input == 'C' && (short int)this->x + 7 < this->window->_maxx) this->x ++;
+        // Swap Fruit
+        if(input == 'c') this->fruitSwap();
+
+        if((input == 'D' || input == 'a') && this->x - 1 > 0) this->x --;
+        if((input == 'C' || input == 'd') && (short int)this->x + 7 < this->window->_maxx) this->x ++;
 
         // Set Color
         bool is_match_first = false;
@@ -89,8 +92,8 @@ public:
         
         // Prepare Player's Strings
         std::vector <std::string> player_icon = {
-            " /=O=\\",
-            "(\"o|o\")",
+            " _.O._",
+            "[\"o|o\"]",
         };
 
         for(unsigned long int i = 0; i < player_icon.size(); i++) {
@@ -111,9 +114,7 @@ public:
 
             this->shoot_frame --;
 
-            KornDraw::drawCharacter(this->window, this->x + 3, this->y + 1, '-');
-
-            KornDraw::drawCharacter(this->window, this->x + 3, this->y, '|');
+            KornDraw::drawCharacter(this->window, this->x + 3, this->y, ' ');
 
             KornDraw::drawCharacter(this->window, this->x + 2, this->y + 1, '*', this->fruit_second);
             KornDraw::drawCharacter(this->window, this->x + 4, this->y + 1, '*', this->fruit_second);

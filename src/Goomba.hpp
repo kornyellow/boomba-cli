@@ -121,6 +121,7 @@ public:
 
         this->progress++;
         this->setPosition(this->progress);
+        this->is_found_match = false;
     }
     void moveBackward() {
 

@@ -94,7 +94,6 @@ public:
 
     void playMusic(std::string music_path) {
 
-        Mix_HaltMusic();
         this->getMusicByPath(music_path)->play();
     }
     void stopMusic() {

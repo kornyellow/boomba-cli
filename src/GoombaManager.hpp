@@ -17,10 +17,14 @@ private:
     long int goomba_spawn_cooldown;
     long int goomba_spawn_rate;
     
-    std::vector<std::string> goomba_set;
+    // Color
     std::string color_set;
 
+    // Game Over
+    bool is_game_over;
+
     // Goomba Set Generator
+    std::vector<std::string> goomba_set;
     unsigned short int fuzzyness;
     unsigned short int min_length;
     unsigned short int max_length;
@@ -32,21 +36,29 @@ private:
         unsigned short int total_length = KornRandom::randomIntRange(min_length, max_length);
         std::string generated_goombas = "";
         unsigned short int generated_length = 0;
+        unsigned short int last_choose_color = C_GRAY;
         for(unsigned short int i = 0; i < this->color_max_count; i++) {
 
             if(generated_length >= total_length) break;
 
-            unsigned short int choose_color = this->color_set.at(KornRandom::randomInt(this->color_set.size() - 1));
+            unsigned short int choose_color = last_choose_color;
+            while(choose_color == last_choose_color) choose_color = this->color_set.at(KornRandom::randomInt(this->color_set.size() - 1));
+            
             unsigned short int total_color_length = KornRandom::randomIntRange(this->color_min_length, this->color_max_length - 1);
             for(unsigned short int j = 0; j < total_color_length; j++) {
                 
                 generated_goombas.push_back(choose_color);
                 generated_length ++;
             }
+            last_choose_color = choose_color;
         }
 
         return generated_goombas + "#";
     }   
+
+    // Tense
+    bool is_tense;
+    unsigned short int tense_delay;
 
     // Mixer
     Mixer* mixer;
@@ -56,22 +68,38 @@ private:
 
 public:
 
+    // Constructor and Destructor
     GoombaManager(WINDOW* window, Mixer* mixer) {
 
+        // Is Game Over
+        this->is_game_over = false;
+
+        // Mixer
         this->mixer = mixer;
+        
+        // Window
         this->window = window;
 
+        // Goomba Spawn
         this->goomba_spawn_cooldown = 0;
         this->goomba_spawn_rate = 1800;
 
-        this->min_length = 25;
-        this->max_length = 45;
+        // Goomba Set Generate Attribute
+        this->min_length = 50;
+        this->max_length = 80;
         this->color_min_length = 2;
-        this->color_max_length = 5;
-        this->color_max_count = 10;
-    }
+        this->color_max_length = 6;
+        this->color_max_count = 20;
 
-    // Paths
+        // Tense
+        this->is_tense = false;
+        this->tense_delay = 0;
+    }
+    ~GoombaManager() {
+
+    }   
+
+    // Paths Management
     void addPath(unsigned long int x, unsigned long int y) {
 
         Position position(x, y);
@@ -202,9 +230,17 @@ public:
 
         return this->path_points;
     }   
+    void clearPathPoints() {
 
-    // Goombas
+        this->path_points.clear();
+        this->paths.clear();
+    }
+
+    // Goombas Management
     void moveGoomba() {
+
+        if(this->tense_delay == 0) this->is_tense = false;
+        else this->tense_delay --;
 
         // Spawn Start
         if(this->spawnGoomba()) {
@@ -225,6 +261,71 @@ public:
                 if(this->goombas.at(i)->getProgress() >= 0 && this->goombas.at(i)->getProgress() < progress_max) {
 
                     this->goombas.at(i)->moveForward();
+                }
+            }
+        }
+
+        // Move Leader
+        for(unsigned long int i = 0; i < this->goombas.size(); i++) {
+
+            // Get Leader
+            if(this->goombas.at(i)->getLeader()) {
+                    
+                if(this->goombas.at(i)->getMoveCooldown() > 0) continue;
+
+                long int leader_progress_start = this->goombas.at(i)->getProgress();
+                long int leader_progress_max = leader_progress_start;
+                
+                // Get Progress Max
+                while(true) {
+                    long int leader_progress_max_old = leader_progress_max;
+                    for(unsigned long int j = 0; j < this->goombas.size(); j++) {
+
+                        if(this->goombas.at(j)->getProgress() == leader_progress_max) leader_progress_max ++;
+                    }
+                    if(leader_progress_max == leader_progress_max_old) break;
+                }
+
+                // Move Goombas In Leader
+                for(unsigned long int j = 0; j < this->goombas.size(); j++) {
+
+                    if(this->goombas.at(j)->getProgress() >= leader_progress_start && this->goombas.at(j)->getProgress() < leader_progress_max) {
+
+                        this->goombas.at(j)->moveForward();
+                        this->goombas.at(j)->setMoveCooldownMax();
+                    }
+                }
+
+                long int progress_max = this->goombas.at(i)->getProgressMax();
+                unsigned long int goomba_speed = 50;
+                long int goomba_cooldown = ((float)leader_progress_max / (float)progress_max) * goomba_speed;
+                goomba_cooldown -= (float(1) - ((float)leader_progress_max / (float)progress_max)) * ((float)goomba_speed / (float)2);
+                if((float)leader_progress_max > (float)progress_max - ((float)progress_max / (float)6)) {
+
+                    goomba_cooldown += ((float)leader_progress_max / (float)progress_max) * ((float)goomba_speed);
+                    this->is_tense = true;
+                    this->tense_delay = 500;
+                }
+                this->goombas.at(i)->setMoveCooldown(goomba_cooldown);
+
+
+                // Remove Collide Leader
+                bool is_found_collided_leader = false;
+                for(unsigned long int j = 0; j < this->goombas.size(); j++) {
+
+                    if(this->goombas.at(j)->getProgress() == leader_progress_max + 1) {
+                        
+                        if(!this->goombas.at(j)->getLeader()) continue;
+
+                        this->deleteGoomba(j);
+                        this->mixer->playSoundEffect(SFX_CONNECT);
+                        is_found_collided_leader = true;
+                        break;
+                    }
+                }
+                if(is_found_collided_leader) {
+
+                    this->moveGoomba();
                 }
             }
         }
@@ -313,69 +414,6 @@ public:
 
             if(last_group_tail_color == C_GRAY) this->goombas.at(i)->setFoundMatch(false);
         }
-
-        // Move Leader
-        for(unsigned long int i = 0; i < this->goombas.size(); i++) {
-
-            // Get Leader
-            if(this->goombas.at(i)->getLeader()) {
-                    
-                if(this->goombas.at(i)->getMoveCooldown() > 0) continue;
-
-                long int leader_progress_start = this->goombas.at(i)->getProgress();
-                long int leader_progress_max = leader_progress_start;
-                
-                // Get Progress Max
-                while(true) {
-                    long int leader_progress_max_old = leader_progress_max;
-                    for(unsigned long int j = 0; j < this->goombas.size(); j++) {
-
-                        if(this->goombas.at(j)->getProgress() == leader_progress_max) leader_progress_max ++;
-                    }
-                    if(leader_progress_max == leader_progress_max_old) break;
-                }
-
-                // Move Goombas In Leader
-                for(unsigned long int j = 0; j < this->goombas.size(); j++) {
-
-                    if(this->goombas.at(j)->getProgress() >= leader_progress_start && this->goombas.at(j)->getProgress() < leader_progress_max) {
-
-                        this->goombas.at(j)->moveForward();
-                        this->goombas.at(j)->setMoveCooldownMax();
-                    }
-                }
-
-                long int progress_max = this->goombas.at(i)->getProgressMax();
-                unsigned long int goomba_speed = 30;
-                long int goomba_cooldown = ((float)leader_progress_max / (float)progress_max) * goomba_speed;
-                goomba_cooldown -= (float(1) - ((float)leader_progress_max / (float)progress_max)) * ((float)goomba_speed / (float)2);
-                if((float)leader_progress_max > (float)progress_max - ((float)progress_max / (float)6)) {
-
-                    goomba_cooldown += ((float)leader_progress_max / (float)progress_max) * ((float)goomba_speed);
-                }
-                this->goombas.at(i)->setMoveCooldown(goomba_cooldown);
-
-
-                // Remove Collide Leader
-                bool is_found_collided_leader = false;
-                for(unsigned long int j = 0; j < this->goombas.size(); j++) {
-
-                    if(this->goombas.at(j)->getProgress() == leader_progress_max + 1) {
-                        
-                        if(!this->goombas.at(j)->getLeader()) continue;
-
-                        this->deleteGoomba(j);
-                        this->mixer->playSoundEffect(SFX_CONNECT);
-                        is_found_collided_leader = true;
-                        break;
-                    }
-                }
-                if(is_found_collided_leader) {
-
-                    this->moveGoomba();
-                }
-            }
-        }
     }   
     void addGoomba(Goomba* goomba) {
 
@@ -389,6 +427,7 @@ public:
         // Get Goomba Color
         if(this->goomba_set.empty()) {
 
+            if(this->is_game_over) return false;
             this->addGoombaSet(this->goombaSetGenerate());
             return false;
         }
@@ -473,7 +512,7 @@ public:
         return colors;
     }
 
-    // Goomba Set
+    // Goomba Set Management
     void addGoombaSet(std::string goomba_set) {
 
         this->goomba_set.push_back(goomba_set);
@@ -483,7 +522,7 @@ public:
         return this->goomba_set;
     }   
 
-    // Get Goomba Lists
+    // Get Goomba Lists Management
     std::vector <Goomba*> getGoombas() {
 
         return this->goombas;
@@ -532,17 +571,64 @@ public:
         return last_progress;
     }
     
-    // Color
+    // Color Manament
     void setColorSet(std::string color_set) {
 
         this->color_set = color_set;
     }   
 
+    // Game Over Accessors
+    bool isGameOver() {
+
+        return this->is_game_over;
+    }
+    void setGameOver(bool is_game_over) {
+
+        this->is_game_over = is_game_over;  
+    }
+
+    // Tense Accessors
+    bool isTense() {
+
+        return this->is_tense;
+    }   
+    void setTense(bool is_tense) {
+
+        this->is_tense = is_tense;
+    }
+
     // Functions
     void update() {
 
+        // Check Game Over
+        for(unsigned long int i = 0; i < this->goombas.size(); i++) {
+            
+            Position last_position = this->path_points.at(this->path_points.size() - 1);
+            if(this->goombas.at(i)->getPosition(this->goombas.at(i)->getProgress()) == last_position) {
+
+                this->is_game_over = true;
+                this->mixer->stopMusic();
+                this->deleteGoomba(i);
+                break;
+            }
+        }
+
+        // Perform Game Over
+        if(this->is_game_over) {
+            
+            for(unsigned int i = 0; i < this->goombas.size(); i++) {
+
+                this->goombas.at(i)->setMoveCooldown(0);
+            }
+        }
+
         // Update Rate
-        if(this->goombas.empty()) this->goomba_spawn_cooldown = 0; 
+        if(this->goombas.empty()) {
+            
+            this->is_tense = false;
+            this->tense_delay = 0;
+            this->goomba_spawn_cooldown = 0;
+        }
 
         // Update Goombas
         this->updateGoombas();

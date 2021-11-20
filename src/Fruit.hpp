@@ -21,7 +21,7 @@ public:
         this->init(x, y, window);
 
         this->move_delay = 0;
-        this->move_speed = 1;
+        this->move_speed = 2;
     }
 
     // Functions
