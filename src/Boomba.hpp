@@ -17,6 +17,9 @@ private:
     unsigned long int max_scope_frame;
     unsigned long int scope;
 
+    // Eye
+    unsigned short int item_eye_duration;
+
 public:
 
     Boomba(unsigned long int x, unsigned long int y, WINDOW *window) {
@@ -27,6 +30,9 @@ public:
         this->max_scope_frame = 0;
         this->shoot_frame = 0;
         this->scope = 0;
+
+        // Eye Item
+        this->item_eye_duration = 0;
     }
 
     // Fruits Functions
@@ -62,6 +68,16 @@ public:
         }
     }
 
+    // Eye Item
+    void setItemEyeDuration(unsigned short int item_eye_duration) {
+
+        this->item_eye_duration = item_eye_duration;
+    }
+    unsigned short int getItemEyeDuration() {
+
+        return this->item_eye_duration;
+    }
+
     // Shoot Functions
     void setScope(unsigned long int x) {
 
@@ -87,6 +103,9 @@ public:
         }
         if(!is_match_first) this->fruit_first = this->color_set.at(KornRandom::randomInt(this->color_set.size() - 1));
         if(!is_match_second) this->fruit_second = this->color_set.at(KornRandom::randomInt(this->color_set.size() - 1));
+
+        // Eyes Item
+        if(this->item_eye_duration > 0) this->item_eye_duration --;
     }
     void draw() {
         
@@ -128,6 +147,17 @@ public:
             for(unsigned long int i = this->y - 1; i > this->scope; i--) {
 
                 KornDraw::drawCharacter(this->window, this->x + 3, i, '\'', this->fruit_first);
+            }
+        }
+
+        // Draw
+        unsigned long int scope_y = this->y - 1;
+        if(this->item_eye_duration > 0) {
+            
+            while(scope_y > scope) {
+
+                KornDraw::drawCharacter(this->window, this->x + 3, scope_y, '|', C_GRAY);
+                scope_y --;
             }
         }
     }

@@ -40,6 +40,16 @@ public:
         KornDraw::drawCharacter(this->window, (unsigned long int)this->x, (unsigned long int)this->y + 2, '|', C_GRAY);
     }
 
+    // Speed
+    void setMoveSpeed(unsigned long int move_speed) {
+        
+        this->move_speed = move_speed;
+    }
+    unsigned long int getMoveSpeed() {
+
+        return this->move_speed;
+    }
+
     // Colors
     void setFruitColor(unsigned short int color) {
 

@@ -2,6 +2,7 @@
 
 // Includes
 #include "ScoreList.hpp"
+#include "Item.hpp"
 #include "Particle.hpp"
 #include "Mixer.hpp"
 #include "GoombaManager.hpp"
@@ -18,6 +19,48 @@ private:
 
     // Scoreboard
     ScoreList* score_list;
+
+    // Items
+    std::vector <Item> items;
+    void updateItems() {
+
+        // Update Items
+        for(unsigned int i = 0; i < this->items.size(); i++) this->items.at(i).update();
+
+        // Update Item Collide Boomba
+        this->itemCollideBoomba();
+
+        // Update Item Out of Bounds
+        for(unsigned int i = 0; i < this->items.size(); i++) if(!this->items.at(i).isShow()) this->items.erase(this->items.begin() + i);
+    }
+    void drawItems() {
+
+        for(unsigned int i = 0; i < this->items.size(); i++) this->items.at(i).draw(); 
+    }
+    void itemCollideBoomba() {
+
+        for(unsigned int i = 0; i < this->items.size(); i++) {
+
+            if(!this->items.at(i).isShow()) continue;
+
+            if(this->items.at(i).getX() >= this->boomba->getX() && 
+               this->items.at(i).getX() <= this->boomba->getX() + 6 && 
+               this->items.at(i).getY() >= this->boomba->getY() && 
+               this->items.at(i).getY() <= this->boomba->getY() + 1) {
+
+                this->mixer->playSoundEffect(SFX_COLLECT);
+                this->mixer->playSoundEffect(SFX_EYE);
+
+                switch(this->items.at(i).getIcon()) {
+                case 'E' :
+                    this->boomba->setItemEyeDuration(600);
+                    break;
+                }
+
+                this->items.at(i).setShow(false);
+            }
+        }
+    }
 
     // Mixer
     Mixer* mixer;
@@ -46,6 +89,8 @@ private:
         this->mixer->addSoundEffect(SFX_BREAK);
         this->mixer->addSoundEffect(SFX_EXPLODE);
         this->mixer->addSoundEffect(SFX_CONNECT);
+        this->mixer->addSoundEffect(SFX_COLLECT);
+        this->mixer->addSoundEffect(SFX_EYE);
 
         // Music List
         this->music_list.push_back(MUS_GAME_1);
@@ -107,11 +152,11 @@ private:
             // Update Boomba
             this->boomba->update(this->input);
                 
-            // Update Scope
-            this->updateScope();
-
             // Shoot Fruit
             this->shootFruit();
+
+            // Update Scope
+            this->updateScope();
 
             // Update Shoot Colors
             if(!this->goomba_manager->getAllColor().empty() && this->goomba_manager->getGoombaSet().empty()) this->boomba->setColorSet(this->goomba_manager->getAllColor());
@@ -149,6 +194,7 @@ private:
 
             Fruit fruit(this->boomba->getX() + 3, this->boomba->getY() - 1, this->window);
             fruit.setFruitColor(fruit_color);
+            if(this->boomba->getItemEyeDuration() > 0) fruit.setMoveSpeed(0);
             this->fruits.push_back(fruit);
 
             Particle particle_top(this->boomba->getX() + 3, this->boomba->getY() - 1, this->window);
@@ -332,33 +378,15 @@ private:
                         particle.setMoveSpeed(3);
                         particle.setFrame("..");
                         
-                        particle.setVSpeed(1);
-                        this->particles.push_back(particle);
+                        for(int i = -1; i <= 1; i++) {
 
-                        particle.setVSpeed(-1);
-                        this->particles.push_back(particle);
+                            for(int j = -1; j <= 1; j++) {
 
-                        particle.setHSpeed(1);
-                        this->particles.push_back(particle);
-
-                        particle.setHSpeed(-1);
-                        this->particles.push_back(particle);
-
-                        particle.setVSpeed(1);
-                        particle.setHSpeed(1);
-                        this->particles.push_back(particle);
-
-                        particle.setVSpeed(-1);
-                        particle.setHSpeed(-1);
-                        this->particles.push_back(particle);
-
-                        particle.setVSpeed(1);
-                        particle.setHSpeed(-1);
-                        this->particles.push_back(particle);
-
-                        particle.setVSpeed(-1);
-                        particle.setHSpeed(1);
-                        this->particles.push_back(particle);
+                                particle.setVSpeed(i);
+                                particle.setHSpeed(j);
+                                this->particles.push_back(particle);
+                            }
+                        }
 
                         this->goomba_manager->deleteGoomba(l);
                         break;
@@ -436,8 +464,6 @@ private:
             long int goomba_progress_max = this->goomba_manager->getMaxProgressLeader(goomba_progress);
             if(goomba_progress != goomba_progress_max) continue;
 
-            this->goomba_manager->deleteGoomba(i);
-
             // Add Score
             float base_score = 200.0f;
             if(!this->goomba_manager->isGameOver()) this->boomba_ui->addScore(base_score * this->multiplier);
@@ -446,7 +472,21 @@ private:
             this->multiplier = 1;
             this->multiplier_delay = 0;
 
-            if(!this->goomba_manager->isGameOver()) this->mixer->playSoundEffect(SFX_EXPLODE);
+            if(!this->goomba_manager->isGameOver()) {
+                
+                this->mixer->playSoundEffect(SFX_EXPLODE);
+                
+                Item item(this->goomba_manager->getGoombas().at(i)->getPosition(goomba_progress).x, this->goomba_manager->getGoombas().at(i)->getPosition(goomba_progress).y, this->window);
+                item.setHSpeed(0);
+                item.setVSpeed(-0.5);
+                item.setMoveSpeed(8);
+                item.setColor(C_CYAN);
+                item.setIcon('E');
+
+                this->items.push_back(item);
+            }
+
+            this->goomba_manager->deleteGoomba(i);
 
             break;
         }   
@@ -826,7 +866,8 @@ private:
                 }
                 this->goomba_manager->calculatePath();
 
-                this->chose_music = KornRandom::randomInt(4);
+                this->chose_music = 1;
+                //this->chose_music = KornRandom::randomInt(4);
                 this->mixer->playMusic(this->music_list.at(chose_music));
 
                 this->boomba->setColorSet(this->color_set);
@@ -959,14 +1000,14 @@ private:
         this->updateFruits();
 
         // Update Goomba Manager
-        this->updateGoombaManager();  
+        this->updateGoombaManager();
+
+        // Update Items
+        this->updateItems();  
     }
     void gameRunDraw() {
 
         if(this->game_state != GAME_RUN) return;
-
-        // Draw Boomba
-        this->boomba->draw();
 
         // Draw Particles
         this->drawParticles();
@@ -974,11 +1015,17 @@ private:
         // Draw Goomba
         this->goomba_manager->draw();
 
+        // Draw Boomba
+        this->boomba->draw();
+
         // Draw Fruit
         this->drawFruits();
 
         // Draw UI
         this->boomba_ui->draw();
+
+        // Draw Items
+        this->drawItems();
     }
 
     // Game End

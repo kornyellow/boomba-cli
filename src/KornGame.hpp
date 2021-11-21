@@ -24,6 +24,8 @@
 #define SFX_BREAK    "resources/sound_effects/break.wav"
 #define SFX_EXPLODE  "resources/sound_effects/explode.wav"
 #define SFX_CONNECT  "resources/sound_effects/connect.wav"
+#define SFX_COLLECT  "resources/sound_effects/collect.wav"
+#define SFX_EYE      "resources/sound_effects/eye.wav"
 
 // Define Colors
 #define C_RED         1
