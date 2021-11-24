@@ -1,7 +1,11 @@
 #pragma once
 
+// Config
+#define IS_PLAY_MUSIC         false
+#define IS_PLAY_SOUND_EFFECT  true
+
 // Define Screen
-#define SCREEN_WIDTH   49
+#define SCREEN_WIDTH   48
 #define SCREEN_HEIGHT  20
 #define TIMEOUT        10
 

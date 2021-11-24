@@ -936,6 +936,7 @@ private:
     long int menu_selection;
     long int map_selection;
     long int difficulty_selection;
+    unsigned int highscore_shift;
 
     // Color
     void initializeColor() {
@@ -1002,6 +1003,7 @@ private:
         }
     }
 
+    // Game
     void saveScore() {
 
         if(this->boomba_ui->getScore() != 0 && !this->enter_name.empty()) {
@@ -1029,6 +1031,7 @@ private:
         this->multiplier = 1;
         this->multiplier_delay = 0;
         this->is_item_collector = 0;
+        this->highscore_shift = 0;
         this->combo = 0;
 
         this->goomba_manager->setItemSlowDuration(0);
@@ -1114,11 +1117,11 @@ private:
         KornDraw::drawTextCenter(this->window, 3, "BoombaGame", C_WHITE);   
 
         // Print Name
-        KornDraw::drawText(this->window, 3, 18, "Made by Korn (64010009)", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 2, 18, "Made by Korn (64010009)", C_LIGHT_GRAY);
 
         // Print Key
-        KornDraw::drawText(this->window, 29, 17, "    X : OK", C_LIGHT_GRAY);
-        KornDraw::drawText(this->window, 29, 18, "Arrow : Navigation", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 32, 17, "X : OK", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 28, 18, "Arrow : Navigation", C_LIGHT_GRAY);
 
         // Print Menu
         KornDraw::drawTextCenter(this->window,  7, menu_entry.at(0), C_GREEN);
@@ -1232,35 +1235,35 @@ private:
                 }
 
                 // Load Map
-                unsigned long int offset_x = 5;
+                unsigned long int offset_x = 4;
                 unsigned long int offset_y = 2;
 
                 switch(this->map_selection) {
                 case ROAD:
 
                     this->goomba_manager->addPath(offset_x + 0 , offset_y + 0 );
-                    this->goomba_manager->addPath(offset_x + 38, offset_y + 0 );
-                    this->goomba_manager->addPath(offset_x + 38, offset_y + 3 );
+                    this->goomba_manager->addPath(offset_x + 37, offset_y + 0 );
+                    this->goomba_manager->addPath(offset_x + 37, offset_y + 3 );
                     this->goomba_manager->addPath(offset_x + 3 , offset_y + 3 );
                     this->goomba_manager->addPath(offset_x + 3 , offset_y + 6 );
-                    this->goomba_manager->addPath(offset_x + 35, offset_y + 6 );
-                    this->goomba_manager->addPath(offset_x + 35, offset_y + 9 );
+                    this->goomba_manager->addPath(offset_x + 34, offset_y + 6 );
+                    this->goomba_manager->addPath(offset_x + 34, offset_y + 9 );
                     this->goomba_manager->addPath(offset_x + 6 , offset_y + 9 );
                     this->goomba_manager->addPath(offset_x + 6 , offset_y + 12);
-                    this->goomba_manager->addPath(offset_x + 32, offset_y + 12);
+                    this->goomba_manager->addPath(offset_x + 31, offset_y + 12);
                     break;
 
                 case SPIRAL:
 
-                    this->goomba_manager->addPath(offset_x + 38, offset_y + 0 );
+                    this->goomba_manager->addPath(offset_x + 37, offset_y + 0 );
                     this->goomba_manager->addPath(offset_x + 0 , offset_y + 0 );
                     this->goomba_manager->addPath(offset_x + 0 , offset_y + 9 );
-                    this->goomba_manager->addPath(offset_x + 35, offset_y + 9 );
-                    this->goomba_manager->addPath(offset_x + 35, offset_y + 6 );
+                    this->goomba_manager->addPath(offset_x + 34, offset_y + 9 );
+                    this->goomba_manager->addPath(offset_x + 34, offset_y + 6 );
                     this->goomba_manager->addPath(offset_x + 3 , offset_y + 6 );
                     this->goomba_manager->addPath(offset_x + 3 , offset_y + 3 );
-                    this->goomba_manager->addPath(offset_x + 38, offset_y + 3 );
-                    this->goomba_manager->addPath(offset_x + 38, offset_y + 12);
+                    this->goomba_manager->addPath(offset_x + 37, offset_y + 3 );
+                    this->goomba_manager->addPath(offset_x + 37, offset_y + 12);
                     this->goomba_manager->addPath(offset_x + 0 , offset_y + 12);
                     break;
                 }
@@ -1325,12 +1328,12 @@ private:
         KornDraw::drawTextCenter(this->window, 3, "Option", C_WHITE);
 
         // Print Name
-        KornDraw::drawText(this->window, 3, 18, "Made by Korn (64010009)", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 2, 18, "Made by Korn (64010009)", C_LIGHT_GRAY);
 
         // Print Key
-        KornDraw::drawText(this->window, 29, 16, "    X : Shoot", C_LIGHT_GRAY);
-        KornDraw::drawText(this->window, 29, 17, "    C : Swap", C_LIGHT_GRAY);
-        KornDraw::drawText(this->window, 29, 18, "Arrow : Navigation", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 32, 16, "X : Shoot", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 32, 17, "C : Swap", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 28, 18, "Arrow : Navigation", C_LIGHT_GRAY);
 
         // Print Menu
         KornDraw::drawTextCenter(this->window,  6, "Maps", C_WHITE);
@@ -1388,15 +1391,20 @@ private:
         KornDraw::drawTextCenter(this->window, 3, "High Score", C_WHITE);
 
         // Print Score
-        unsigned int entry = 5;
-        for(unsigned int i = 0; i < this->score_list->get().size(); i++) {
+        for(unsigned int i = 0; i < 5; i++) {
 
-            if(i == entry) break;
+            // Print Empty Entry
+            if(i >= this->score_list->get().size()) {
+
+                KornDraw::drawTextCenter(this->window, 6 + (i * 2), "- None -", C_GRAY);
+                continue;
+            }
 
             std::string score_string = std::to_string(this->score_list->get().at(i).getScore());
             std::string empty;
             for(unsigned i = 0; i < 10 - score_string.size(); i++) empty.push_back(' ');
 
+            // Print Valid Entry
             if(i == 0) {
                 KornDraw::drawText(this->window, 11, 6 + (i * 2), this->score_list->get().at(i).getName(), C_CYAN);
                 KornDraw::drawText(this->window, 27, 6 + (i * 2), empty + std::to_string(this->score_list->get().at(i).getScore()), C_CYAN);
@@ -1420,11 +1428,11 @@ private:
         else KornDraw::drawTextCenter(this->window, 16, "->  Back  <-", C_RED);
 
         // Print Name
-        KornDraw::drawText(this->window, 3, 18, "Made by Korn (64010009)", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 2, 18, "Made by Korn (64010009)", C_LIGHT_GRAY);
 
         // Print Key
-        KornDraw::drawText(this->window, 29, 17, "    X : OK", C_LIGHT_GRAY);
-        KornDraw::drawText(this->window, 29, 18, "Arrow : Navigation", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 32, 17, "X : OK", C_LIGHT_GRAY);
+        KornDraw::drawText(this->window, 28, 18, "Arrow : Navigation", C_LIGHT_GRAY);
     }
 
     // Game Run
@@ -1657,12 +1665,21 @@ private:
         KornDraw::drawTextCenter(this->window, 4, "#----------------#", C_LIGHT_GRAY);
         KornDraw::drawTextCenter(this->window, 3, "GameOver");
 
-        KornDraw::drawTextCenter(this->window, 7, "New Highscore!", C_YELLOW);
+        // Check highscore
+        bool is_highscore = true;
+        for(unsigned int i = 0; i < this->score_list->get().size(); i++) {
+            if(this->boomba_ui->getScore() < this->score_list->get().size()) {
+
+                is_highscore = false;
+            }
+        }
+
+        if(is_highscore) KornDraw::drawTextCenter(this->window, 8, "New Highscore!");
 
         KornDraw::drawText(this->window, 4, 11, "Your score");
         KornDraw::drawText(this->window, 15, 11, std::to_string(this->boomba_ui->getScore()), C_GREEN);
         
-        KornDraw::drawText(this->window, 4, 14, "Enter your name");
+        KornDraw::drawText(this->window, 4, 13, "Enter your name");
         KornDraw::drawText(this->window, 4, 15, this->enter_name + "_", C_YELLOW);
 
         KornDraw::drawTextCenter(this->window, 17, this->time_end, C_WHITE);

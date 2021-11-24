@@ -18,7 +18,7 @@ public:
 
     void play() {
 
-        Mix_PlayChannel(-1, this->mix_chunk, 0);
+        if(IS_PLAY_SOUND_EFFECT) Mix_PlayChannel(-1, this->mix_chunk, 0);
     }
 
     bool init(std::string sound_effect_path) {

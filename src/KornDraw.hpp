@@ -39,21 +39,21 @@ public:
     static void drawTextCenter(WINDOW* window, int y, std::string text, int color = C_WHITE) {
 
         wattron(window, COLOR_PAIR(color));
-        mvwprintw(window, y, (window->_maxx/2) - (text.size()/2), text.c_str());
+        mvwprintw(window, y, (window->_maxx/2) - (text.size()/2) + 1, text.c_str());
         wattroff(window, COLOR_PAIR(color));
     }
     static void drawTextCenter(WINDOW* window, int y, const char* text, int color = C_WHITE) {
 
         std::string text_string = text;
         wattron(window, COLOR_PAIR(color));
-        mvwprintw(window, y, (window->_maxx/2) - (text_string.size()/2), text);
+        mvwprintw(window, y, (window->_maxx/2) - (text_string.size()/2) + 1, text);
         wattroff(window, COLOR_PAIR(color));
     }
     static void drawTextCenter(WINDOW* window, int y, int text, int color = C_WHITE) {
 
         std::string text_string = std::to_string(text);
         wattron(window, COLOR_PAIR(color));
-        mvwprintw(window, y, (window->_maxx/2) - (text_string.size()/2), text_string.c_str());
+        mvwprintw(window, y, (window->_maxx/2) - (text_string.size()/2) + 1, text_string.c_str());
         wattroff(window, COLOR_PAIR(color));
     }
 

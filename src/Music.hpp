@@ -18,7 +18,7 @@ public:
 
     void play() {
 
-        Mix_PlayMusic(this->mix_music, -1);
+        if(IS_PLAY_MUSIC) Mix_PlayMusic(this->mix_music, -1);
     }
 
     bool init(std::string music_path) {
