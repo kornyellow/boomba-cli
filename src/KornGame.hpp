@@ -111,7 +111,7 @@ namespace KornGame {
         raw();
         noecho();
         use_default_colors();
-        resizeterm(22, 55);
+        resizeterm(33, 119);
         curs_set(false);
         mouseinterval(0);
         mousemask(ALL_MOUSE_EVENTS |REPORT_MOUSE_POSITION, NULL);
