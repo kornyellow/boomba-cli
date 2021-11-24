@@ -152,7 +152,7 @@ private:
                         Particle particle(i, SCREEN_HEIGHT - 1, this->window);
                         particle.setColor(C_GREEN);
                         particle.setVSpeed(-1);
-                        particle.setMoveSpeed(3);
+                        particle.setMoveSpeed(KornRandom::randomIntRange(1, 3));
                         particle.setFrame("^^..");
                         this->particles.push_back(particle);
                     }
@@ -1162,14 +1162,14 @@ private:
                 this->mixer->playSoundEffect(SFX_CHOOSE);
 
                 this->map_selection --;
-                if(map_selection < 0) map_selection = 3;
+                if(this->map_selection < 0) this->map_selection = this->map_list.size() - 1;
             }
             else if((char)this->input == 5) {
 
                 this->mixer->playSoundEffect(SFX_CHOOSE);
 
                 this->map_selection ++;
-                if(map_selection > 3) map_selection = 0;
+                if((unsigned long int)this->map_selection > this->map_list.size() - 1) this->map_selection = 0;
             }
             break;
 
@@ -1179,14 +1179,14 @@ private:
                 this->mixer->playSoundEffect(SFX_CHOOSE);
 
                 this->difficulty_selection --;
-                if(difficulty_selection < 0) difficulty_selection = this->map_list.size();
+                if(this->difficulty_selection < 0) this->difficulty_selection = 4;
             }
             else if((char)this->input == 5) {
 
                 this->mixer->playSoundEffect(SFX_CHOOSE);
 
                 this->difficulty_selection ++;
-                if(difficulty_selection > this->map_list.size()) difficulty_selection = 0;
+                if(this->difficulty_selection > 4) this->difficulty_selection = 0;
             }
             break;
 
