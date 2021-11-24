@@ -46,6 +46,7 @@ public:
         // Framerate
         intrflush(this->window, true);
         wtimeout(this->window, TIMEOUT);
+        keypad(this->window, TRUE);
 
         // Initialize Board
         boardClear();
@@ -84,7 +85,7 @@ public:
     void boardClear() {
 
         wclear(this->window);
-        boardAddBorder();
+        this->boardAddBorder();
     }
     void boardRefresh() {
         

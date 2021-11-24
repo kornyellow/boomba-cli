@@ -34,11 +34,11 @@ public:
 
         return this->y;
     }
-    void setX(float) {
+    void setX(float x) {
 
         this->x = x;
     }
-    void setY(float) {
+    void setY(float y) {
 
         this->y = y;
     }

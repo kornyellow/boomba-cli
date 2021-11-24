@@ -17,8 +17,12 @@ private:
     unsigned long int max_scope_frame;
     unsigned long int scope;
 
-    // Eye
+    // Item
     unsigned short int item_eye_duration;
+    bool bomb_shot;
+    bool lightning_shot;
+    bool item_blink;
+    unsigned short int item_blink_delay;
 
 public:
 
@@ -31,8 +35,12 @@ public:
         this->shoot_frame = 0;
         this->scope = 0;
 
-        // Eye Item
+        // Item
         this->item_eye_duration = 0;
+        this->bomb_shot = false;
+        this->lightning_shot = false;
+        this->item_blink = false;
+        this->item_blink_delay = 0;
     }
 
     // Fruits Functions
@@ -90,8 +98,16 @@ public:
         // Swap Fruit
         if(input == 'c') this->fruitSwap();
 
-        if((input == 'D' || input == 'a') && this->x - 1 > 0) this->x --;
-        if((input == 'C' || input == 'd') && (short int)this->x + 7 < this->window->_maxx) this->x ++;
+        // Blink
+        if(this->item_blink_delay == 0) {
+
+            this->item_blink_delay = 10;
+            this->item_blink = !this->item_blink;
+        }
+        if(this->item_blink_delay > 0 && (this->lightning_shot || this->bomb_shot)) this->item_blink_delay --;
+
+        if(((char)input == 4) && this->x - 1 > 0) this->x --;
+        if(((char)input == 5) && (short int)this->x + 7 < this->window->_maxx) this->x ++;
 
         // Set Color
         bool is_match_first = false;
@@ -152,7 +168,7 @@ public:
 
         // Draw
         unsigned long int scope_y = this->y - 1;
-        if(this->item_eye_duration > 0) {
+        if(this->item_eye_duration > 0 && !this->lightning_shot) {
             
             while(scope_y > scope) {
 
@@ -160,5 +176,36 @@ public:
                 scope_y --;
             }
         }
+
+        // Bomb Shot
+        if(this->bomb_shot) {
+
+            if(item_blink) KornDraw::drawCharacter(this->window, this->x + 3, this->y, '&', C_WHITE);
+            else KornDraw::drawCharacter(this->window, this->x + 3, this->y, '&', C_MAGENTA);
+        }
+
+        // Lightning Shot
+        if(this->lightning_shot) {
+
+            if(item_blink) KornDraw::drawCharacter(this->window, this->x + 3, this->y, '/', C_WHITE);
+            else KornDraw::drawCharacter(this->window, this->x + 3, this->y, '\\', C_WHITE);
+        }
+    }
+
+    bool isLightningShot() {
+
+        return this->lightning_shot;
+    }
+    void setLightningShot(bool lightning_shot) {
+        
+        this->lightning_shot = lightning_shot;
+    }
+    bool isBombShot() {
+
+        return this->bomb_shot;
+    }
+    void setBombShot(bool bomb_shot) {
+
+        this->bomb_shot = bomb_shot;
     }
 };

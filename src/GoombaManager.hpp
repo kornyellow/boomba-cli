@@ -28,8 +28,6 @@ private:
     unsigned short int fuzzyness;
     unsigned short int min_length;
     unsigned short int max_length;
-    unsigned short int color_min_length;
-    unsigned short int color_max_length;
     unsigned short int color_max_count;
     std::string goombaSetGenerate() {
 
@@ -44,7 +42,13 @@ private:
             unsigned short int choose_color = last_choose_color;
             while(choose_color == last_choose_color) choose_color = this->color_set.at(KornRandom::randomInt(this->color_set.size() - 1));
             
-            unsigned short int total_color_length = KornRandom::randomIntRange(this->color_min_length, this->color_max_length - 1);
+            unsigned short int total_color_length = 0;
+            unsigned short int random_chance = KornRandom::randomInt(99);
+                 if(random_chance >=  0 && random_chance <   3) total_color_length = 6;
+            else if(random_chance >=  3 && random_chance <  10) total_color_length = KornRandom::randomIntRange(4, 5);
+            else if(random_chance >= 10 && random_chance <  70) total_color_length = KornRandom::randomIntRange(1, 2);
+            else if(random_chance >= 70 && random_chance < 100) total_color_length = 3;
+
             for(unsigned short int j = 0; j < total_color_length; j++) {
                 
                 generated_goombas.push_back(choose_color);
@@ -60,6 +64,10 @@ private:
     bool is_tense;
     unsigned short int tense_delay;
 
+    // Slow and Stop
+    unsigned short int item_stop_duration;
+    unsigned short int item_slow_duration;
+
     // Mixer
     Mixer* mixer;
 
@@ -74,6 +82,10 @@ public:
         // Is Game Over
         this->is_game_over = false;
 
+        // Slow and Stop
+        this->item_slow_duration = 0;
+        this->item_stop_duration = 0;
+
         // Mixer
         this->mixer = mixer;
         
@@ -87,8 +99,6 @@ public:
         // Goomba Set Generate Attribute
         this->min_length = 50;
         this->max_length = 80;
-        this->color_min_length = 2;
-        this->color_max_length = 6;
         this->color_max_count = 20;
 
         // Tense
@@ -272,6 +282,7 @@ public:
             if(this->goombas.at(i)->getLeader()) {
                     
                 if(this->goombas.at(i)->getMoveCooldown() > 0) continue;
+                if(this->item_stop_duration) continue;
 
                 long int leader_progress_start = this->goombas.at(i)->getProgress();
                 long int leader_progress_max = leader_progress_start;
@@ -306,6 +317,7 @@ public:
                     this->is_tense = true;
                     this->tense_delay = 500;
                 }
+                if(this->item_slow_duration) goomba_cooldown *= 3;
                 this->goombas.at(i)->setMoveCooldown(goomba_cooldown);
 
 
@@ -531,6 +543,10 @@ public:
 
         this->goombas.erase(this->goombas.begin() + index);
     }
+    void clearGoomba() {
+
+        this->goombas.clear();
+    }
     long int getMaxProgressLeader(unsigned long int start) {
 
         long int last_progress = start;
@@ -587,6 +603,24 @@ public:
         this->is_game_over = is_game_over;  
     }
 
+    // Stop and Slow
+    void setItemSlowDuration(unsigned short int duration) {
+
+        this->item_slow_duration = duration;
+    }
+    unsigned short int getItemSlowDuration() {
+
+        return this->item_slow_duration;
+    }
+    void setItemStopDuration(unsigned short int duration) {
+
+        this->item_stop_duration = duration;
+    }
+    unsigned short int getItemStopDuration() {
+
+        return this->item_stop_duration;
+    }
+
     // Tense Accessors
     bool isTense() {
 
@@ -595,6 +629,31 @@ public:
     void setTense(bool is_tense) {
 
         this->is_tense = is_tense;
+    }
+
+    // Draw Path
+    void drawPath() {
+
+        // Draw Path
+        unsigned long int path_points_size = this->path_points.size();
+        for(unsigned long int i = 0; i < path_points_size; i++) {
+
+            // Draw Path
+            if(i < path_points_size - 1) {
+
+                KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, '.', C_GRAY);
+            }
+        }
+
+        // Draw Start Point And End Point
+        for(unsigned long int i = 0; i < path_points_size; i++) {
+
+            // Start Point
+            if(i == 0) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'S');
+
+            // End Point
+            if(i == path_points_size - 1) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'E');
+        }
     }
 
     // Functions
@@ -632,31 +691,14 @@ public:
 
         // Update Goombas
         this->updateGoombas();
+
+        // Item Duration
+        if(this->item_slow_duration > 0) this->item_slow_duration --;
+        if(this->item_stop_duration > 0) this->item_stop_duration --;
     }
     void draw() {
 
-        // Draw Path
-        unsigned long int path_points_size = this->path_points.size();
-        for(unsigned long int i = 0; i < path_points_size; i++) {
-
-            // Draw Path
-            if(i < path_points_size - 1) {
-
-                KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, '.', C_GRAY);
-            }
-        }
-
         // Draw Goombas
         drawGoombas();
-
-        // Draw Start Point And End Point
-        for(unsigned long int i = 0; i < path_points_size; i++) {
-
-            // Start Point
-            if(i == 0) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'S');
-
-            // End Point
-            if(i == path_points_size - 1) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'E');
-        }
     }
 };

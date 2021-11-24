@@ -13,6 +13,7 @@
 #define MUS_GAME_3  "resources/music/game_3.ogg"
 #define MUS_GAME_4  "resources/music/game_4.ogg"
 #define MUS_GAME_5  "resources/music/game_5.ogg"
+#define MUS_GAME_6  "resources/music/game_6.ogg"
 #define MUS_TENSE   "resources/music/tense.ogg"
 #define MUS_END     "resources/music/end.ogg"
 
@@ -26,7 +27,15 @@
 #define SFX_CONNECT  "resources/sound_effects/connect.wav"
 #define SFX_COLLECT  "resources/sound_effects/collect.wav"
 #define SFX_EYE      "resources/sound_effects/eye.wav"
-
+#define SFX_SCORE    "resources/sound_effects/score.wav"
+#define SFX_SLOW     "resources/sound_effects/slow.wav"
+#define SFX_STOP     "resources/sound_effects/stop.wav"
+#define SFX_PAUSE    "resources/sound_effects/pause.wav"
+#define SFX_DAMAGE   "resources/sound_effects/damage.wav"
+#define SFX_CHOIR    "resources/sound_effects/choir.wav"
+#define SFX_BEAM     "resources/sound_effects/beam.wav"
+#define SFX_CHARGE   "resources/sound_effects/charge.wav"
+ 
 // Define Colors
 #define C_RED         1
 #define C_YELLOW      2
@@ -43,14 +52,22 @@
 #define GAME_MENU_PLAY       1
 #define GAME_MENU_HIGHSCORE  2
 #define GAME_RUN             3
-#define GAME_END             4
-#define GAME_QUIT            5
+#define GAME_PAUSE           4
+#define GAME_END             5
+#define GAME_QUIT            6
+
+// Define Items
+#define ITEM_EYE        '@'
+#define ITEM_SLOW       '+'
+#define ITEM_STOP       '!'
+#define ITEM_SCORE      '$'
+#define ITEM_LIGHTNING  '/'
+#define ITEM_BOMB       '&'
+#define ITEM_COLLECTOR  '~'
 
 // Define Maps
 #define ROAD      0
 #define SPIRAL    1
-#define STAIRS    2
-#define MOUNTAIN  3
 
 // Define Difficulty
 #define EASY        0
@@ -65,6 +82,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
@@ -91,6 +109,8 @@ namespace KornGame {
         use_default_colors();
         resizeterm(22, 55);
         curs_set(false);
+        mouseinterval(0);
+        mousemask(ALL_MOUSE_EVENTS |REPORT_MOUSE_POSITION, NULL);
     }
     static void gameRun() {
 

@@ -41,9 +41,10 @@ public:
             this->move_delay = this->move_speed;
 
             long x = this->x;
-            if(x + this->h_speed > SCREEN_WIDTH - 2 || x + this->h_speed < 0) this->is_show = false;
+            if(x + this->h_speed > SCREEN_WIDTH - 2 || x + this->h_speed < 1) this->h_speed = -this->h_speed;
             long y = this->y;
-            if(y + this->v_speed > SCREEN_HEIGHT - 2 || y + this->v_speed < 0) this->is_show = false;
+            if(y + this->v_speed > SCREEN_HEIGHT - 1) this->is_show = false;
+            if(y + this->v_speed < 1)  this->y = 1;
         }
         else this->move_delay --;
     }
