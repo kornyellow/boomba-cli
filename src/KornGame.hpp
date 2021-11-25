@@ -1,7 +1,7 @@
 #pragma once
 
 // Config
-#define IS_PLAY_MUSIC         false
+#define IS_PLAY_MUSIC         true
 #define IS_PLAY_SOUND_EFFECT  true
 
 // Define Screen
