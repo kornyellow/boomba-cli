@@ -634,8 +634,30 @@ public:
     // Draw Path
     void drawPath() {
 
-        // Draw Path
+        // Draw Start Point And End Point
         unsigned long int path_points_size = this->path_points.size();
+        for(unsigned long int i = 0; i < path_points_size; i++) {
+
+            // Start Point
+            if(i == 0) {
+                KornDraw::drawText(this->window, this->path_points.at(i).x - 1, this->path_points.at(i).y - 1, ".@.", C_LIGHT_GRAY);
+                KornDraw::drawText(this->window, this->path_points.at(i).x - 1, this->path_points.at(i).y, "| |", C_LIGHT_GRAY);
+                KornDraw::drawText(this->window, this->path_points.at(i).x - 1, this->path_points.at(i).y + 1, "\'-\'", C_LIGHT_GRAY);
+                KornDraw::drawText(this->window, this->path_points.at(i).x, this->path_points.at(i).y - 1, "?", C_GREEN);
+                KornDraw::drawText(this->window, this->path_points.at(i).x, this->path_points.at(i).y + 1, "?", C_GREEN);
+            }
+
+            // End Point
+            if(i == path_points_size - 1) {
+                KornDraw::drawText(this->window, this->path_points.at(i).x - 1, this->path_points.at(i).y - 1, ".@.", C_LIGHT_GRAY);
+                KornDraw::drawText(this->window, this->path_points.at(i).x - 1, this->path_points.at(i).y, "| |", C_LIGHT_GRAY);
+                KornDraw::drawText(this->window, this->path_points.at(i).x - 1, this->path_points.at(i).y + 1, "\'-\'", C_LIGHT_GRAY);
+                KornDraw::drawText(this->window, this->path_points.at(i).x, this->path_points.at(i).y - 1, "!", C_RED);
+                KornDraw::drawText(this->window, this->path_points.at(i).x, this->path_points.at(i).y + 1, "!", C_RED);
+            }
+        }
+
+        // Draw Path
         for(unsigned long int i = 0; i < path_points_size; i++) {
 
             // Draw Path
@@ -643,16 +665,6 @@ public:
 
                 KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, '.', C_GRAY);
             }
-        }
-
-        // Draw Start Point And End Point
-        for(unsigned long int i = 0; i < path_points_size; i++) {
-
-            // Start Point
-            if(i == 0) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'S');
-
-            // End Point
-            if(i == path_points_size - 1) KornDraw::drawCharacter(this->window, this->path_points.at(i).x, this->path_points.at(i).y, 'E');
         }
     }
 

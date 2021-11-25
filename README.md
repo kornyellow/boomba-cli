@@ -1,6 +1,6 @@
 # Boomba
 
-![Boomba Game Infographic](infographic/infographic.svg "Boomba Game")
+![Boomba Game Infographic](infographic/infographic.png "Boomba Game")
 
 เกมนี้ชื่อว่า Boomba ได้แรงบันดาลใจมาจากเกม Zuma, Luxor ซึ่งแสดงผลบน Terminal โดยใช้ ncurses สำหรับการแสดงผล และ SDL Mixer สำหรับเสียง
 
@@ -50,7 +50,3 @@ $ ./main
 - <kbd>x</kbd>: ยิงกระสุน
 - <kbd>c</kbd>: สลับสีกระสุน
 - <kbd>q</kbd>: หยุดเกม
-
-
-OLD 54 22
-NEW 119 33
