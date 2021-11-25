@@ -39,7 +39,15 @@ $ make
 
 ## วิธีติดตั้งและรันตัวเกม (Windows)
 
-เข้าที่เว็บไซต์ Replit :
+เข้าที่เว็บไซต์ Replit
+
+- ลิ้งเข้าเว็บ Replit https://replit.com/@KornYellow/boomba-cli
+
+จากนั้นใน Terminal พิมพ์คำสั่ง
+
+``` console
+$ make && ./main
+```
 
 ## วิธีเล่นเกม
 
