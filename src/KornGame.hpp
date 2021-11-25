@@ -39,7 +39,7 @@
 #define SFX_CHOIR    "resources/sound_effects/choir.wav"
 #define SFX_BEAM     "resources/sound_effects/beam.wav"
 #define SFX_CHARGE   "resources/sound_effects/charge.wav"
- 
+
 // Define Colors
 #define C_RED         1
 #define C_YELLOW      2
@@ -111,7 +111,7 @@ namespace KornGame {
         raw();
         noecho();
         use_default_colors();
-        resizeterm(33, 119);
+        resizeterm(22, 54);
         curs_set(false);
         mouseinterval(0);
         mousemask(ALL_MOUSE_EVENTS |REPORT_MOUSE_POSITION, NULL);
