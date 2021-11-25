@@ -25,16 +25,16 @@ $ sudo pacman -S ncurses sdl_mixer
 $ sudo apt-get install libsdl-mixer1.2-dev libncurses5-dev
 ```
 
-คำสั่งคอมไพล์
-
-``` console
-$ make
-```
-
 คำสั่งรันตัวเกม
 
 ``` console
 $ ./main
+```
+
+คำสั่งคอมไพล์ (กรณีแก้ไขไฟล์)
+
+``` console
+$ make
 ```
 
 ## วิธีเล่นเกม
