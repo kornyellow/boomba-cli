@@ -35,7 +35,7 @@ Compile
 $ make
 ```
 
-# How to install (Windows)
+## How to install (Windows)
 
 Using Replit: https://replit.com/@KornYellow/boomba-cli
 
@@ -45,7 +45,7 @@ In Replit's terminal using command
 $ make && ./main
 ```
 
-# How to play
+## How to play
 
 Navigating menu
 
