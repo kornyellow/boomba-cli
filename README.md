@@ -54,7 +54,7 @@ Navigating menu
   
 Controlling player
 
-- <kbd>←</kbd> และ <kbd>→</kbd>: move
+- <kbd>←</kbd> and <kbd>→</kbd>: move
 - <kbd>x</kbd>: shoot
 - <kbd>c</kbd>: swap color
 - <kbd>q</kbd>: pause
