@@ -9,7 +9,7 @@ This game is called Boomba inspired by Zuma and Luxor which I use ncurses to ren
 My dependencies:
 
 - `ncurses` 6.2 for rendering in terminal
-- `libsdl` และ `libsdl_mixer` 1.2 for sounds
+- `libsdl` and `libsdl_mixer` 1.2 for sounds
 
 Arch Linux
 
