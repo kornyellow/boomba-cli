@@ -111,7 +111,7 @@ namespace KornGame {
         raw();
         noecho();
         use_default_colors();
-        resizeterm(23, 54);
+        resizeterm(33, 119);
         curs_set(false);
         mouseinterval(0);
     }

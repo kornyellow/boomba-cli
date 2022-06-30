@@ -1,6 +1,7 @@
 # Boomba
 
-![Boomba Game Infographic](infographic/infographic.png "Boomba Game")
+![Boomba Game Screenshot](screenshot.png "Boomba Game Screenshot")
+![Boomba Game Infographic](infographic/infographic.png "Boomba Game Infograpghic")
 
 เกมนี้ชื่อว่า Boomba ได้แรงบันดาลใจมาจากเกม Zuma, Luxor ซึ่งแสดงผลบน Terminal โดยใช้ ncurses สำหรับการแสดงผล และ SDL Mixer สำหรับเสียง
 
