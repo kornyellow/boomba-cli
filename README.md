@@ -3,59 +3,49 @@
 ![Boomba Game Screenshot](screenshot.png "Boomba Game Screenshot")
 ![Boomba Game Infographic](infographic/infographic.png "Boomba Game Infograpghic")
 
-This game is called Boomba inspired by Zuma and Luxor which I use ncurses to render it on Terminal and SDL Mixer for sounds
+เกมนี่ชื่อว่า Boomba ได้แรงบันดาลใจจากเกม Zuma และ Luxor ซึ่งผมใช้ ncurses ในการแสดงผลลงบน Terminal และ SDL Mixer ในการเล่นเสียงเพลง
 
-## How to install (Linux)
+## วิธิการติดตั้งและเล่น สำหรับ Linux เท่านั้น TT
 
-My dependencies:
+Dependencies ต่าง ๆ:
 
-- `ncurses` 6.2 for rendering in terminal
-- `libsdl` and `libsdl_mixer` 1.2 for sounds
+- `ncurses` 6.2 สำหรับแสดงผลลงบน Terminal
+- `libsdl` และ `libsdl_mixer` 1.2 สำหรับเสียง
 
-Arch Linux
+ติดตั้งบน Arch Linux
 
 ``` console
 $ sudo pacman -S ncurses sdl_mixer
 ```
 
-Ubuntu
+ติดตั้งบน Ubuntu
 
 ``` console
 $ sudo apt-get install libsdl-mixer1.2-dev libncurses5-dev
 ```
 
-Run
+เล่นเกม!
 
 ``` console
 $ ./main
 ```
 
-Compile
+คอมไพล์เกม
 
 ``` console
 $ make
 ```
 
-## How to install (Windows)
+## วิธีเล่นเกม
 
-Using Replit: https://replit.com/@KornYellow/boomba-cli
+การจัดการเมนูของเกม
 
-In Replit's terminal using command
-
-``` console
-$ make && ./main
-```
-
-## How to play
-
-Navigating menu
-
-- <kbd>↑</kbd> and <kbd>↓</kbd>: to choose menu
-- <kbd>x</kbd>: confirm
+- <kbd>↑</kbd> และ <kbd>↓</kbd>: เพื่อเลือกเมนู
+- <kbd>x</kbd>: คอนเฟิร์ม
   
-Controlling player
+การจัดการผู้เล่น
 
-- <kbd>←</kbd> and <kbd>→</kbd>: move
-- <kbd>x</kbd>: shoot
-- <kbd>c</kbd>: swap color
-- <kbd>q</kbd>: pause
+- <kbd>←</kbd> และQ <kbd>→</kbd>: เคลื่อนที่
+- <kbd>x</kbd>: ยิงกระสุน
+- <kbd>c</kbd>: สลับสี
+- <kbd>q</kbd>: หยุดเกม
